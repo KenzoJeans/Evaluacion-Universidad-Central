@@ -10,44 +10,32 @@ st.set_page_config(
 )
 
 # ---------------------------------------------------------------------------
-# ESTILOS CSS PERSONALIZADOS (Estética moderna y colorida tipo Kenzo Jeans)
+# ESTILOS CSS PERSONALIZADOS (Diseño moderno, oscuro y vistoso)
 # ---------------------------------------------------------------------------
 st.markdown(
     """
     <style>
-    /* Fondo general de la aplicación */
     .stApp {
         background-color: #0e1117;
         color: #fafafa;
     }
     
-    /* Barra lateral */
     section[data-testid="stSidebar"] {
         background-color: #161b22;
-        border-right: 1px_solid #30363d;
+        border-right: 1px solid #30363d;
     }
 
-    /* Tarjetas de contenido con estilo moderno */
-    .custom-card {
-        background-color: #1f242d;
-        padding: 25px;
-        border-radius: 12px;
-        border-left: 6px solid #1f77b4;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-        margin-bottom: 20px;
+    /* Tarjetas de contenido estilizadas nativas */
+    div.element-container div.stMarkdown {
+        color: #fafafa;
     }
     
-    .custom-card h3 {
-        color: #58a6ff;
-        margin-top: 0;
-    }
-
-    /* Estilo de métricas */
+    /* Métricas con diseño corporativo */
     div[data-testid="stMetric"] {
         background-color: #1f242d;
         padding: 15px;
         border-radius: 10px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         border: 1px solid #30363d;
     }
     div[data-testid="stMetric"] label {
@@ -62,7 +50,7 @@ st.markdown(
 )
 
 # ---------------------------------------------------------------------------
-# DATOS DE LA PLANTA Y EQUIPOS (Claves estandarizadas sin errores)
+# DATOS DE LA PLANTA Y EQUIPOS
 # ---------------------------------------------------------------------------
 EQUIPOS = {
     "homogenizacion": {
@@ -189,31 +177,27 @@ with st.sidebar:
     pagina = st.selectbox("Seleccionar Equipo", paginas, index=paginas.index(inicial), format_func=etiquetas.get)
 
 # ---------------------------------------------------------------------------
-# PLANTILLA DE FICHA GENÉRICA
+# PLANTILLA DE FICHA GENÉRICA (Corregida con Markdown nativo y vistoso)
 # ---------------------------------------------------------------------------
 def ficha_generica(clave):
     e = EQUIPOS[clave]
     st.header(e["nombre"])
 
-    st.markdown(f"""
-    <div class="custom-card">
-        <h3>🏭 1. Tipo de industria</h3>
-        <p>{e['industria']}</p>
-        
-        <h3>⚙️ 2. Qué es y para qué sirve (Uso general)</h3>
-        <p>{e['uso_general']}</p>
-        
-        <h3>⚖️ 3. Cuándo sí y cuándo no se usa</h3>
-        <ul>
-            <li><b>Cuándo sí:</b> {e['cuando_si']}</li>
-            <li><b>Cuándo no:</b> {e['cuando_no']}</li>
-        </ul>
-        
-        <h3>💡 4. Datos curiosos e información valiosa</h3>
-        <p>{e['dato_curioso']}</p>
-    </div>
-    """, unsafe_allow_html=True)
+    with st.container():
+        st.markdown(f"### 🏭 1. Tipo de industria")
+        st.info(e["industria"])
 
+        st.markdown(f"### ⚙️ 2. Qué es y para qué sirve (Uso general)")
+        st.write(e["uso_general"])
+
+        st.markdown(f"### ⚖️ 3. Cuándo sí y cuándo no se usa")
+        st.markdown(f"- **Cuándo sí:** {e['cuando_si']}")
+        st.markdown(f"- **Cuándo no:** {e['cuando_no']}")
+
+        format_curioso = f"💡 **Dato curioso:** {e['dato_curioso']}"
+        st.success(format_curioso)
+
+    st.markdown("---")
     st.subheader("📊 Parámetros de diseño y cálculo rápido")
     c1, c2 = st.columns(2)
     c1.metric("Volumen útil", f"{e['V']} m³")
@@ -230,26 +214,21 @@ def ficha_sedimentador():
     
     st.header(e["nombre"])
 
-    st.markdown(f"""
-    <div class="custom-card">
-        <h3>🏭 1. Tipo de industria</h3>
-        <p>{e['industria']}</p>
-        
-        <h3>⚙️ 2. Qué es y para qué sirve (Uso general)</h3>
-        <p>{e['uso_general']}</p>
-        <p><b>En nuestra planta:</b> El agua floculada entra por una tubería perforada ubicada bajo los paneles de sedimentación acelerada. Los flóculos caen hacia las dos bases piramidales y se purgan por dos válvulas de 3" hacia las bandejas de deshidratación.</p>
-        
-        <h3>⚖️ 3. Cuándo sí y cuándo no se usa</h3>
-        <ul>
-            <li><b>Cuándo sí:</b> Flóculos densos, caudal estable y SST moderados.</li>
-            <li><b>Cuándo no:</b> Partículas livianas, grasas o picos de caudal fuertes.</li>
-        </ul>
-        
-        <h3>💡 4. Datos curiosos e información valiosa</h3>
-        <p>{e['dato_curioso']}</p>
-    </div>
-    """, unsafe_allow_html=True)
+    with st.container():
+        st.markdown(f"### 🏭 1. Tipo de industria")
+        st.info(e["industria"])
 
+        st.markdown(f"### ⚙️ 2. Qué es y para qué sirve (Uso general)")
+        st.write(e["uso_general"])
+        st.write("**En nuestra planta:** El agua floculada entra por una tubería perforada ubicada bajo los paneles de sedimentación acelerada. Los flóculos caen hacia las dos bases piramidales y se purgan por dos válvulas de 3\" hacia las bandejas de deshidratación.")
+
+        st.markdown(f"### ⚖️ 3. Cuándo sí y cuándo no se usa")
+        st.markdown("- **Cuándo sí:** Flóculos densos, caudal estable y SST moderados.")
+        st.markdown("- **Cuándo no:** Partículas livianas, grasas o picos de caudal fuertes.")
+
+        st.success(f"💡 **Dato curioso:** {e['dato_curioso']}")
+
+    st.markdown("---")
     st.subheader("📐 Dimensionamiento y Fórmulas")
     st.latex(r"A = L \times B \qquad CS = \frac{Q}{A} \qquad TRH = \frac{V}{Q}")
     st.caption("A: área superficial (m²) · CS: carga superficial (m³/m²·d) · Q: caudal · V: volumen útil")
@@ -285,11 +264,21 @@ def pagina_qr():
         col2.download_button("Descargar PNG", buf.getvalue(), f"qr_{clave}.png", "image/png", key=f"dl_{clave}")
 
 # ---------------------------------------------------------------------------
-# ENRUTADOR PRINCIPAL
+# ENRUTADOR PRINCIPAL (Con sección de Kenzo Jeans y compromiso ambiental)
 # ---------------------------------------------------------------------------
 if pagina == "inicio":
-    st.title("💧 Fichas técnicas de la PTAR")
-    st.write("Selecciona un equipo en la barra lateral o escanea su respectivo código QR para visualizar los datos técnicos completos.")
+    st.title("💧 Fichas técnicas de la PTAR - Kenzo Jeans")
+    
+    st.markdown("""
+    ### 🌿 Compromiso Ambiental y Sostenibilidad
+    En **Kenzo Jeans**, entendemos que la moda y la innovación industrial deben marchar de la mano con la protección de los recursos naturales. Nuestro compromiso con el medio ambiente se refleja en la gestión integral de nuestros procesos productivos, asegurando que cada gota de agua utilizada en las etapas de lavandería y tintorería reciba un tratamiento riguroso antes de su retorno al sistema.
+    
+    El sistema de tratamiento de aguas residuales (**PTAR**) representa el núcleo de nuestra política de producción limpia y economía circular, garantizando el cumplimiento estricto de las normativas ambientales vigentes y minimizando nuestra huella hídrica.
+    """)
+
+    st.markdown("---")
+    st.info("👉 **Instrucciones:** Selecciona un equipo en el menú de la barra lateral para explorar sus especificaciones técnicas detalladas, o escanea los códigos QR ubicados en planta para acceder de forma rápida desde dispositivos móviles.")
+
 elif pagina == "sedimentador":
     ficha_sedimentador()
 elif pagina == "qr":

@@ -1,19 +1,46 @@
 import io
-
 import qrcode
 import streamlit as st
 
-st.set_page_config(page_title="Fichas técnicas PTAR", page_icon="💧", layout="centered")
+st.set_page_config(
+    page_title="Fichas técnicas PTAR", 
+    page_icon="💧", 
+    layout="centered",
+    initial_sidebar_state="expanded"
+)
 
 # ---------------------------------------------------------------------------
-# CONFIGURACIÓN DE ESTILO (Modo Oscuro Forzado)
+# ESTILOS CSS ADICIONALES (Para barra lateral, tarjetas y móviles)
 # ---------------------------------------------------------------------------
 st.markdown(
     """
     <style>
+    /* Estilo general y adaptabilidad móvil */
     .stApp {
-        background-color: #0e1117;
-        color: #fafafa;
+        background-color: #222831;
+        color: #eeeeee;
+    }
+    
+    /* Forzar fondo y estilo de la barra lateral */
+    section[data-testid="stSidebar"] {
+        background-color: #1b1f27;
+        border-right: 1px solid #393e46;
+    }
+
+    /* Tarjetas de contenido personalizado */
+    .custom-card {
+        background-color: #393e46;
+        padding: 20px;
+        border-radius: 10px;
+        border-left: 5px solid #00adb5;
+        margin-bottom: 20px;
+    }
+
+    /* Mejora de visualización en móviles */
+    @media (max-width: 768px) {
+        .stMetric {
+            font-size: 14px !important;
+        }
     }
     </style>
     """,
@@ -21,8 +48,7 @@ st.markdown(
 )
 
 # ---------------------------------------------------------------------------
-# DATOS DE LA PLANTA Y EQUIPOS (Con información técnica y contextual)
-# V = volumen útil en m³
+# DATOS DE LA PLANTA Y EQUIPOS
 # ---------------------------------------------------------------------------
 EQUIPOS = {
     "homogenizacion": {
@@ -59,11 +85,11 @@ EQUIPOS = {
             "de aluminio o sales de fierro) para desestabilizar las cargas eléctricas de los coloides suspendidos "
             "y colorantes disueltos."
         ),
-        "cuando_si": (
+        "quando_si": (
             "Para remover color verdadero, color aparente, turbiedad fina y materia orgánica coloidal "
             "que no se retiene por gravedad simple."
         ),
-        "cuando_no": (
+        "quando_no": (
             "Cuando el agua contiene exclusivamente contaminantes disueltos biodegradables que se eliminan "
             "mejor mediante tratamientos biológicos directos sin consumo alto de químicos."
         ),
@@ -104,9 +130,9 @@ EQUIPOS = {
             "Química de Oxígeno (DQO) remanente, destruir compuestos recalcitrantes o eliminar trazas de color "
             "que sobrevivieron al proceso fisicoquímico."
         ),
-        "cuando_si": (
-            "Cuando los límites de vertimiento exigidos por la autoridad ambiental (CAR u otras entidades) "
-            "son muy estrictos en cuanto a DQO residual y color."
+        "quando_si": (
+            "Cuando los límites de vertimiento exigidos por la autoridad ambiental son muy estrictos "
+            "en cuanto a DQO residual y color."
         ),
         "quando_no": (
             "Cuando la carga orgánica principal es fácilmente tratable solo con los procesos primarios y "
@@ -119,15 +145,23 @@ EQUIPOS = {
     },
 }
 
-CAUDAL_DEFECTO_LMIN = 100.0  # PENDIENTE DE VERIFICAR
-SED_L, SED_B = 3.8, 1.5  # largo y ancho del sedimentador (m)
+CAUDAL_DEFECTO_LMIN = 100.0  
+SED_L, SED_B = 3.8, 1.5  
 
 # ---------------------------------------------------------------------------
-# BARRA LATERAL: caudal editable y navegación
+# BARRA LATERAL (Con Logo Grande y Controles)
 # ---------------------------------------------------------------------------
-st.sidebar.title("💧 PTAR Tintorería")
-q_lmin = st.sidebar.number_input("Caudal de trabajo (L/min)", 1.0, 5000.0, CAUDAL_DEFECTO_LMIN, 5.0)
-st.sidebar.warning("Caudal de referencia pendiente de verificar. Cámbialo para explorar escenarios.")
+with st.sidebar:
+    # Espacio para el logo tamaño grande arriba (asegúrate de tener 'logo.png' en la raíz)
+    try:
+        st.image("logo.png", use_container_width=True)
+    except Exception:
+        st.warning("⚠️ No se encontró 'logo.png'. Colócalo en la raíz del proyecto.")
+
+    st.title("💧 PTAR Tintorería")
+    q_lmin = st.number_input("Caudal de trabajo (L/min)", 1.0, 5000.0, CAUDAL_DEFECTO_LMIN, 5.0)
+    st.info("Caudal de referencia pendiente de verificar. Cámbialo para explorar escenarios.")
+
 q_m3h = q_lmin * 60 / 1000
 q_m3d = q_lmin * 1.44
 
@@ -136,38 +170,44 @@ etiquetas = {"inicio": "Inicio", "qr": "Generar códigos QR", **{k: v["nombre"] 
 inicial = st.query_params.get("equipo", "inicio")
 if inicial not in paginas:
     inicial = "inicio"
-pagina = st.sidebar.selectbox("Equipo", paginas, index=paginas.index(inicial), format_func=etiquetas.get)
 
+with st.sidebar:
+    pagina = st.selectbox("Seleccionar Equipo", paginas, index=paginas.index(inicial), format_func=etiquetas.get)
 
 # ---------------------------------------------------------------------------
-# PLANTILLA DE FICHA GENÉRICA (Con todas las secciones solicitadas)
+# PLANTILLA DE FICHA GENÉRICA
 # ---------------------------------------------------------------------------
 def ficha_generica(clave):
     e = EQUIPOS[clave]
     st.header(e["nombre"])
 
-    st.subheader("1. Tipo de industria")
-    st.write(e["industria"])
-
-    st.subheader("2. Qué es y para qué sirve (Uso general)")
-    st.write(e["uso_general"])
-
-    st.subheader("3. Cuándo sí y cuándo no se usa")
-    st.markdown(f"- **Cuándo sí:** {e['cuando_si']}")
-    st.markdown(f"- **Cuándo no:** {e['cuando_no']}")
-
-    st.subheader("4. Datos curiosos e información valiosa")
-    st.success(e["dato_curioso"])
+    st.markdown(f"""
+    <div class="custom-card">
+        <h3>1. Tipo de industria</h3>
+        <p>{e['industria']}</p>
+        
+        <h3>2. Qué es y para qué sirve (Uso general)</h3>
+        <p>{e['uso_general']}</p>
+        
+        <h3>3. Cuándo sí y cuándo no se usa</h3>
+        <ul>
+            <li><b>Cuándo sí:</b> {e['cuando_si']}</li>
+            <li><b>Cuándo no:</b> {e['cuando_no']}</li>
+        </ul>
+        
+        <h3>4. Datos curiosos e información valiosa</h3>
+        <p>💡 {e['dato_curioso']}</p>
+    </div>
+    """, unsafe_allow_html=True)
 
     st.subheader("5. Parámetros de diseño y cálculo rápido")
     c1, c2 = st.columns(2)
     c1.metric("Volumen útil", f"{e['V']} m³")
-    c2.metric("TRH con el caudal actual", f"{e['V'] / q_m3h:.2f} h")
+    c2.metric("TRH (Caudal actual)", f"{e['V'] / q_m3h:.2f} h")
     st.caption(e["nota"])
 
-
 # ---------------------------------------------------------------------------
-# FICHA ESPECÍFICA: SEDIMENTADOR (Adaptada con la misma estructura completa)
+# FICHA ESPECÍFICA: SEDIMENTADOR
 # ---------------------------------------------------------------------------
 def ficha_sedimentador():
     area = SED_L * SED_B
@@ -176,48 +216,38 @@ def ficha_sedimentador():
     
     st.header(e["nombre"])
 
-    st.subheader("1. Tipo de industria")
-    st.write(e["industria"])
-
-    st.subheader("2. Qué es y para qué sirve (Uso general)")
-    st.write(e["uso_general"])
-    st.write(
-        "**En nuestra planta:** El agua floculada entra por una tubería perforada ubicada bajo los paneles "
-        "de sedimentación acelerada. Los flóculos caen hacia las dos bases piramidales y se purgan por dos válvulas "
-        "de 3\" hacia las bandejas de deshidratación. El clarificado sale por dos tubos perforados de 3\" unidos "
-        "con una TEE hacia el tanque de oxidación."
-    )
-
-    st.subheader("3. Cuándo sí y cuándo no se usa")
-    st.markdown(
-        "- **Cuándo sí:** Flóculos densos, caudal estable (asegurado por homogenización), SST moderados.\n"
-        "- **Cuándo no:** Partículas livianas o flotantes como grasas, flóculos frágiles, picos de caudal que arrastren el lodo.\n"
-        "- **Alternativa:** Flotación por aire disuelto (DAF) cuando el sólido flota en vez de sedimentar."
-    )
-
-    st.subheader("4. Datos curiosos e información valiosa")
-    st.success(e["dato_curioso"])
+    st.markdown(f"""
+    <div class="custom-card">
+        <h3>1. Tipo de industria</h3>
+        <p>{e['industria']}</p>
+        
+        <h3>2. Qué es y para qué sirve (Uso general)</h3>
+        <p>{e['uso_general']}</p>
+        <p><b>En nuestra planta:</b> El agua floculada entra por una tubería perforada ubicada bajo los paneles de sedimentación acelerada. Los flóculos caen hacia las dos bases piramidales y se purgan por dos válvulas de 3" hacia las bandejas de deshidratación.</p>
+        
+        <h3>3. Cuándo sí y cuándo no se usa</h3>
+        <ul>
+            <li><b>Cuándo sí:</b> Flóculos densos, caudal estable y SST moderados.</li>
+            <li><b>Cuándo no:</b> Partículas livianas, grasas o picos de caudal fuertes.</li>
+        </ul>
+        
+        <h3>4. Datos curiosos e información valiosa</h3>
+        <p>💡 {e['dato_curioso']}</p>
+    </div>
+    """, unsafe_allow_html=True)
 
     st.subheader("5. Dimensionamiento y Fórmulas")
     st.latex(r"A = L \times B \qquad CS = \frac{Q}{A} \qquad TRH = \frac{V}{Q}")
-    st.caption(
-        "A: área superficial (m²) · CS: carga superficial (m³/m²·d) · Q: caudal · V: volumen útil · "
-        "Una partícula se retiene si su velocidad de sedimentación es mayor o igual a CS (principio de Hazen)."
-    )
-    st.info("Rango típico de CS para sedimentadores convencionales: ~20-40 m³/m²·d. Con paneles inclinados el área efectiva aumenta.")
+    st.caption("A: área superficial (m²) · CS: carga superficial (m³/m²·d) · Q: caudal · V: volumen útil")
 
     st.subheader("6. Calculadora de rendimiento")
-    extra = st.number_input("Área efectiva adicional de los paneles inclinados (m²)", 0.0, 200.0, 0.0, 0.5,
-                            help="Proyección horizontal de los paneles. Dato pendiente de medir.")
+    extra = st.number_input("Área efectiva adicional de paneles inclinados (m²)", 0.0, 200.0, 0.0, 0.5)
     c1, c2, c3 = st.columns(3)
     c1.metric("Área superficial", f"{area + extra:.2f} m²")
     c2.metric("TRH", f"{v / q_m3h:.2f} h")
     c3.metric("Carga superficial", f"{q_m3d / (area + extra):.1f} m³/m²·d")
 
-    st.subheader("7. En nuestra planta")
-    st.write(f"Dimensiones: {SED_L} × {SED_B} m, 2 bases piramidales de 0.75 m de alto, volumen útil {v} m³.")
-
-    st.subheader("8. Pregunta pista")
+    st.subheader("7. Pregunta pista")
     resp = st.number_input("¿Cuál es la carga superficial (m³/m²·d) con el caudal actual, sin paneles?", 0.0, 1000.0, 0.0, 0.1)
     if st.button("Verificar respuesta"):
         correcta = q_m3d / area
@@ -225,7 +255,6 @@ def ficha_sedimentador():
             st.success("¡Correcto!")
         else:
             st.error("No coincide. Revisa las unidades de caudal y el área superficial.")
-
 
 # ---------------------------------------------------------------------------
 # GENERADOR DE QR
@@ -241,13 +270,12 @@ def pagina_qr():
         col2.write(f"**{e['nombre']}**")
         col2.download_button("Descargar PNG", buf.getvalue(), f"qr_{clave}.png", "image/png", key=f"dl_{clave}")
 
-
 # ---------------------------------------------------------------------------
 # ENRUTADOR PRINCIPAL
 # ---------------------------------------------------------------------------
 if pagina == "inicio":
     st.title("Fichas técnicas de la PTAR")
-    st.write("Escanea el QR de cada equipo o elige uno en el menú lateral. El caudal de la barra lateral se puede modificar para explorar escenarios.")
+    st.write("Selecciona un equipo en la barra lateral o escanea su respectivo código QR para visualizar los datos técnicos completos.")
 elif pagina == "sedimentador":
     ficha_sedimentador()
 elif pagina == "qr":

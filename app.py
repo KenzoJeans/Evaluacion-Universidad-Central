@@ -1,6 +1,4 @@
 import io
-import matplotlib.patches as patches
-import matplotlib.pyplot as plt
 import qrcode
 import streamlit as st
 
@@ -46,91 +44,7 @@ st.markdown(
 )
 
 # ---------------------------------------------------------------------------
-# FUNCIONES DE GENERACIÓN DE PLANOS TÉCNICOS (Matplotlib Estilo Negativo)
-# ---------------------------------------------------------------------------
-def configurar_estilo_plano(ax, titulo):
-    ax.set_facecolor('#0e1117')
-    ax.axis('off')
-    ax.text(0.5, 0.93, titulo, color='cyan', fontsize=10, ha='center', weight='bold', transform=ax.transAxes)
-
-def plano_draga():
-    fig, ax = plt.subplots(figsize=(6, 3))
-    fig.patch.set_facecolor('#0e1117')
-    configurar_estilo_plano(ax, "CORTE ESQUEMÁTICO - DRAGA Y REJILLAS")
-    ax.add_patch(patches.Rectangle((0.5, 1.0), 5.0, 2.0, linewidth=2, edgecolor='white', facecolor='#1f242d'))
-    for x in [1.8, 2.3, 2.8, 3.3]:
-        ax.plot([x, x], [1.0, 3.0], color='cyan', linewidth=2.5)
-    ax.add_patch(patches.Rectangle((1.0, 1.8), 0.4, 0.8, edgecolor='red', facecolor='red', alpha=0.7))
-    ax.set_xlim(0, 6)
-    ax.set_ylim(0, 4)
-    plt.tight_layout()
-    return fig
-
-def plano_torre():
-    fig, ax = plt.subplots(figsize=(6, 3.5))
-    fig.patch.set_facecolor('#0e1117')
-    configurar_estilo_plano(ax, "CORTE ESQUEMÁTICO - TORRE DE ENFRIAMIENTO")
-    ax.add_patch(patches.Rectangle((2.0, 0.5), 2.5, 2.8, linewidth=2, edgecolor='white', facecolor='#1f242d'))
-    ax.add_patch(patches.Ellipse((3.25, 3.3), 1.2, 0.3, edgecolor='cyan', facecolor='#58a6ff'))
-    for y in [1.1, 1.5, 1.9, 2.3]:
-        ax.plot([2.2, 4.3], [y, y], color='cyan', linestyle='--', linewidth=1.2)
-    ax.set_xlim(0, 6.5)
-    ax.set_ylim(0, 4)
-    plt.tight_layout()
-    return fig
-
-def plano_homogenizacion():
-    fig, ax = plt.subplots(figsize=(6, 3))
-    fig.patch.set_facecolor('#0e1117')
-    configurar_estilo_plano(ax, "CORTE TRANSVERSAL - HOMOGENIZACIÓN")
-    ax.add_patch(patches.Rectangle((1.0, 0.8), 4.5, 2.2, linewidth=2, edgecolor='cyan', facecolor='#1f242d'))
-    ax.add_patch(patches.Rectangle((1.0, 0.8), 4.5, 1.6, linewidth=0, facecolor='#1f77b4', alpha=0.4))
-    ax.text(3.25, 1.6, "Volumen Útil: 12 m³\n(Total: 14 m³)", color='cyan', fontsize=8, ha='center', va='center', weight='bold')
-    ax.set_xlim(0, 6.5)
-    ax.set_ylim(0, 4)
-    plt.tight_layout()
-    return fig
-
-def plano_coagulacion():
-    fig, ax = plt.subplots(figsize=(6, 3.5))
-    fig.patch.set_facecolor('#0e1117')
-    configurar_estilo_plano(ax, "CORTE TRANSVERSAL - COAGULACIÓN")
-    ax.add_patch(patches.Rectangle((2.2, 1.2), 2.2, 1.8, linewidth=2, edgecolor='cyan', facecolor='#1f242d'))
-    cono = patches.Polygon([[2.2, 1.2], [4.4, 1.2], [3.3, 0.4]], closed=True, linewidth=2, edgecolor='cyan', facecolor='#1f242d')
-    ax.add_patch(cono)
-    ax.plot([3.3, 3.3], [1.2, 2.8], color='white', linewidth=2)
-    ax.text(3.3, 2.0, "Agitador 0.5 HP", color='#58a6ff', fontsize=7, ha='center', va='center')
-    ax.set_xlim(1, 6)
-    ax.set_ylim(0, 4)
-    plt.tight_layout()
-    return fig
-
-def plano_sedimentador():
-    fig, ax = plt.subplots(figsize=(6, 3.2))
-    fig.patch.set_facecolor('#0e1117')
-    configurar_estilo_plano(ax, "CORTE TRANSVERSAL - SEDIMENTADOR")
-    ax.add_patch(patches.Rectangle((1.0, 1.4), 4.5, 1.6, linewidth=2, edgecolor='cyan', facecolor='#1f242d'))
-    tolvas = patches.Polygon([[1.0, 1.4], [5.5, 1.4], [4.2, 0.4], [3.25, 0.7], [2.3, 0.4], [1.0, 1.4]], closed=True, linewidth=2, edgecolor='cyan', facecolor='#1f242d')
-    ax.add_patch(tolvas)
-    ax.text(3.25, 2.1, "Zona Clarificación", color='white', fontsize=8, ha='center', va='center')
-    ax.set_xlim(0, 6.5)
-    ax.set_ylim(0, 4)
-    plt.tight_layout()
-    return fig
-
-def plano_oxidacion():
-    fig, ax = plt.subplots(figsize=(6, 3.5))
-    fig.patch.set_facecolor('#0e1117')
-    configurar_estilo_plano(ax, "CORTE TRANSVERSAL - OXIDACIÓN")
-    ax.add_patch(patches.Rectangle((2.1, 0.6), 2.4, 2.6, linewidth=2, edgecolor='cyan', facecolor='#1f242d'))
-    ax.text(3.3, 1.9, "Volumen Útil: 5.8 m³\nDiámetro: 1.8 m", color='white', fontsize=8, ha='center', va='center')
-    ax.set_xlim(1, 6)
-    ax.set_ylim(0, 4)
-    plt.tight_layout()
-    return fig
-
-# ---------------------------------------------------------------------------
-# DATOS TÉCNICOS DEL TREN DE TRATAMIENTO
+# DATOS TÉCNICOS DEL TREN DE TRATAMIENTO (Llaves corregidas y unificadas)
 # ---------------------------------------------------------------------------
 EQUIPOS = {
     "draga_rejillas": {
@@ -139,16 +53,28 @@ EQUIPOS = {
         "V": 0.0,
         "nota": "Sistema preliminar de retención de sólidos gruesos en serie paralela.",
         "industria": "Industrial / Tratamiento Preliminar Textil",
-        "uso_general": "Primera fase del sistema encargada de la remoción de sólidos de gran tamaño provenientes del área de tintorería, constituida por una draga y una serie en paralelo de cuatro rejillas con diferentes diámetros.",
-        "cuando_si": "De forma permanente durante la recepción de las aguas residuales crudas (ARND) para evitar obstrucciones y daños mecánicos en las motobombas y equipos posteriores.",
-        "cuando_no": "No se debe operar sin la revisión periódica de acumulación de sólidos, ya que un bloqueo total provocaría desbordamientos en la cabecera de la planta.",
-        "dato_curioso": "Las rejillas de diferentes diámetros actúan como un filtro progresivo para proteger los impulsores de las bombas frente a hilos y retazos textiles.",
+        "uso_general": (
+            "Primera fase del sistema encargada de la remoción de sólidos de gran tamaño provenientes "
+            "del área de tintorería, constituida por una draga y una serie en paralelo de cuatro rejillas "
+            "con diferentes diámetros para la retención de sólidos menores."
+        ),
+        "cuando_si": (
+            "De forma permanente durante la recepción de las aguas residuales crudas (ARND) para evitar "
+            "obstrucciones y daños mecánicos en las motobombas y equipos posteriores."
+        ),
+        "cuando_no": (
+            "No se debe operar sin la revisión periódica de acumulación de sólidos, ya que un bloqueo total "
+            "provocaría desbordamientos en la cabecera de la planta."
+        ),
+        "dato_curioso": (
+            "Las rejillas de diferentes diámetros actúan como un filtro progresivo para proteger los impulsores "
+            "de las bombas de transferencia frente a hilos y retazos textiles."
+        ),
         "specs_mecanicas": [
             "**Componentes:** Draga de limpieza y 4 rejillas en paralelo.",
             "**Función:** Retención de sólidos gruesos y menores.",
             "**Mantenimiento:** Retiro periódico de residuos retenidos."
-        ],
-        "plano_func": plano_draga
+        ]
     },
     "torre_enfriamiento": {
         "nombre": "Torre de Enfriamiento",
@@ -156,16 +82,26 @@ EQUIPOS = {
         "V": 0.0,
         "nota": "Incluye 12 paneles de polipropileno de alta densidad y ventilador superior.",
         "industria": "Industrial / Acondicionamiento Térmico",
-        "uso_general": "Recibe el agua succionada por motobomba accionada por flotador para disminuir la temperatura del vertimiento por debajo de los 30 °C mediante caída y flujo de aire ascendente generado por un ventilador en la parte más alta.",
-        "cuando_si": "Siempre que el agua de tintorería ingrese a altas temperaturas, asegurando que los procesos biológicos y químicos posteriores no sufran choques térmicos.",
-        "quando_no": "Cuando el efluente ya se encuentre a temperatura ambiente y no requiera disipación térmica.",
-        "dato_curioso": "Los 12 paneles de polipropileno de alta densidad ubicados en su interior no solo optimizan el intercambio térmico, sino que actúan como trampa final para retirar sólidos flotantes.",
+        "uso_general": (
+            "Recibe el agua succionada por motobomba accionada por flotador para disminuir la temperatura "
+            "del vertimiento por debajo de los 30 °C mediante caída y flujo de aire ascendente generado por un ventilador en la parte más alta."
+        ),
+        "cuando_si": (
+            "Siempre que el agua de tintorería ingrese a altas temperaturas, asegurando que los procesos "
+            "biológicos y químicos posteriores no sufran choques térmicos."
+        ),
+        "cuando_no": (
+            "Cuando el efluente ya se encuentre a temperatura ambiente y no requiera disipación térmica."
+        ),
+        "dato_curioso": (
+            "Los 12 paneles de polipropileno de alta densidad ubicados en su interior no solo optimizan el intercambio "
+            "térmico, sino que actúan como trampa final para retirar sólidos flotantes que pasaron la draga."
+        ),
         "specs_mecanicas": [
             "**Rendimiento térmico:** Disminución del vertimiento por debajo de 30 °C.",
             "**Medio de contacto:** 12 paneles de polipropileno de alta densidad.",
             "**Sistema de aire:** Ventilador superior de tiro forzado."
-        ],
-        "plano_func": plano_torre
+        ]
     },
     "homogenizacion": {
         "nombre": "Tanque de Homogenización",
@@ -174,11 +110,20 @@ EQUIPOS = {
         "V_total": 14.0,
         "nota": "Dimensiones: 5.1 m largo × 2.4 m ancho × 1.2 m altura total (1.0 m útil)[cite: 7].",
         "industria": "Industrial / Ecualización de Carga",
-        "uso_general": "Almacena y mezcla el efluente proveniente de la torre de enfriamiento para estandarizar el caudal, la temperatura y amortiguar las fluctuaciones drásticas del pH características de los baños de tinte.",
-        "cuando_si": "Para evitar picos de carga hidráulica y química que desestabilicen el tratamiento fisicoquímico posterior.",
-        "quando_no": "Cuando el tanque requiera mantenimiento correctivo o vaciado total por acumulación de sedimentos pesados.",
-        "dato_curioso": "La bomba sumergible de 3 HP cuenta con una tubería de recirculación que permite regular con precisión el caudal exacto que se envía hacia el tanque de coagulación.",
-        "plano_func": plano_homogenizacion
+        "uso_general": (
+            "Almacena y mezcla el efluente proveniente de la torre de enfriamiento para estandarizar el caudal, "
+            "la temperatura y amortiguar las fluctuaciones drásticas del pH características de los baños de tinte."
+        ),
+        "cuando_si": (
+            "Para evitar picos de carga hidráulica y química que desestabilicen el tratamiento fisicoquímico posterior."
+        ),
+        "cuando_no": (
+            "Cuando el tanque requiera mantenimiento correctivo o vaciado total por acumulación de sedimentos pesados."
+        ),
+        "dato_curioso": (
+            "La bomba sumergible de 3 HP cuenta con una tubería de recirculación que permite regular con precisión "
+            "el caudal exacto que se envía hacia el tanque de coagulación."
+        ),
     },
     "coagulacion": {
         "nombre": "Tanque de Coagulación-Floculación",
@@ -187,11 +132,20 @@ EQUIPOS = {
         "V_total": 3.74,
         "nota": "Cilíndrico con base cónica. Diámetro: 1.5 m, Altura recta: 1.5 m, Altura cono: 0.5 m, Altura total con patas: 3.2 m[cite: 8].",
         "industria": "Industrial / Tratamiento Fisicoquímico",
-        "uso_general": "Tanque cilíndrico con base cónica y un agitador interno accionado por un motor de 0.5 HP a velocidad constante. Realiza la mezcla rápida del producto coagulante y solución alcalina para la regulación del pH y desestabilización de coloides.",
-        "cuando_si": "Para la remoción eficaz de color verdadero, color aparente y sólidos coloidales suspendidos en el agua textil.",
-        "quando_no": "Cuando el tren opere sin flujo de agua o sin dosificación de químicos, para evitar daños en el eje del agitador.",
-        "dato_curioso": "El agitador de 0.5 HP permanece encendido a velocidad constante mientras ingresa el agua, garantizando una mezcla química homogénea antes del paso al sedimentador.",
-        "plano_func": plano_coagulacion
+        "uso_general": (
+            "Tanque cilíndrico con base cónica y un agitador interno accionado por un motor de 0.5 HP a velocidad constante. "
+            "Realiza la mezcla rápida del producto coagulante y solución alcalina para la regulación del pH y desestabilización de coloides."
+        ),
+        "cuando_si": (
+            "Para la remoción eficaz de color verdadero, color aparente y sólidos coloidales suspendidos en el agua textil."
+        ),
+        "cuando_no": (
+            "Cuando el tren opere sin flujo de agua o sin dosificación de químicos, para evitar daños en el eje del agitador."
+        ),
+        "dato_curioso": (
+            "El agitador de 0.5 HP permanece encendido a velocidad constante mientras ingresa el agua, garantizando "
+            "una mezcla química homogénea antes del paso al sedimentador."
+        ),
     },
     "sedimentador": {
         "nombre": "Sedimentador Clarificador",
@@ -200,11 +154,20 @@ EQUIPOS = {
         "V_total": 10.8,
         "nota": "Dimensiones: 3.8 m largo × 1.5 m ancho × 1.7 m alto. 2 bases piramidales de 0.75 m de alto[cite: 9].",
         "industria": "Industrial y Municipal / Separación Sólido-Líquido",
-        "uso_general": "Separa por gravedad los flóculos formados en la coagulación, obteniendo agua clarificada en la parte superior y lodos concentrados en sus bases piramidales.",
-        "cuando_si": "Cuando se obtienen flóculos densos gracias a una correcta dosificación en el tanque de coagulación.",
-        "quando_no": "Cuando se presentan picos de caudal extremo que generen turbulencia e impidan la decantación de los lodos.",
-        "dato_curioso": "Emplea el principio de Hazen y velocidad de sedimentación para garantizar que el agua clarificada cumpla con los estándares estéticos antes de pasar a la oxidación.",
-        "plano_func": plano_sedimentador
+        "uso_general": (
+            "Separa por gravedad los flóculos formados en la coagulación, obteniendo agua clarificada en la parte superior "
+            "y lodos concentrados en sus bases piramidales."
+        ),
+        "cuando_si": (
+            "Cuando se obtienen flóculos densos gracias a una correcta dosificación en el tanque de coagulación."
+        ),
+        "cuando_no": (
+            "Cuando se presentan picos de caudal extremo que generen turbulencia e impidan la decantación de los lodos."
+        ),
+        "dato_curioso": (
+            "Emplea el principio de Hazen y velocidad de sedimentación para garantizar que el agua clarificada cumpla "
+            "con los estándares estéticos antes de pasar a la oxidación."
+        ),
     },
     "oxidacion": {
         "nombre": "Tanque de Oxidación",
@@ -213,11 +176,19 @@ EQUIPOS = {
         "V_total": 6.1,
         "nota": "Dimensiones: Diámetro 1.8 m, Altura recta 2.4 m[cite: 10].",
         "industria": "Industrial / Tratamiento Avanzado o Afinado",
-        "uso_general": "Permite llevar a cabo reacciones de oxidación química o biológica para reducir la Demanda Química de Oxígeno (DQO) remanente y eliminar trazas finales de color.",
-        "cuando_si": "Cuando los límites de vertimiento exigidos por la autoridad ambiental son estrictos en DQO y color residual.",
-        "quando_no": "Cuando la carga orgánica ya cumple con los parámetros normativos tras la etapa fisicoquímica.",
-        "dato_curioso": "Actúa como la barrera final de seguridad dentro del tren de tratamiento de la PTAR antes de la disposición final.",
-        "plano_func": plano_oxidacion
+        "uso_general": (
+            "Permite llevar a cabo reacciones de oxidación química o biológica para reducir la Demanda "
+            "Química de Oxígeno (DQO) remanente y eliminar trazas finales de color."
+        ),
+        "cuando_si": (
+            "Cuando los límites de vertimiento exigidos por la autoridad ambiental son estrictos en DQO y color residual."
+        ),
+        "cuando_no": (
+            "Cuando la carga orgánica ya cumple con los parámetros normativos tras la etapa fisicoquímica."
+        ),
+        "dato_curioso": (
+            "Actúa como la barrera final de seguridad dentro del tren de tratamiento de la PTAR antes de la disposición final."
+        ),
     },
 }
 
@@ -225,7 +196,7 @@ CAUDAL_DEFECTO_LMIN = 100.0
 SED_L, SED_B = 3.8, 1.5  
 
 # ---------------------------------------------------------------------------
-# BARRA LATERAL: Logo y controles
+# BARRA LATERAL: Logo grande y controles
 # ---------------------------------------------------------------------------
 with st.sidebar:
     try:
@@ -257,9 +228,7 @@ def ficha_generica(clave):
     e = EQUIPOS[clave]
     st.header(e["nombre"])
 
-    col_info, col_plano = st.columns([1.2, 1])
-
-    with col_info:
+    with st.container():
         st.markdown(f"### 🏭 1. Tipo de industria")
         st.info(e["industria"])
 
@@ -277,11 +246,6 @@ def ficha_generica(clave):
 
         st.success(f"💡 **Dato curioso:** {e['dato_curioso']}")
 
-    with col_plano:
-        st.markdown(f"### 📐 Esquema en Negativo")
-        fig = e["plano_func"]()
-        st.pyplot(fig)
-
     if e.get("tipo") == "diseno":
         st.markdown("---")
         st.subheader("📊 Parámetros de diseño y cálculo rápido")
@@ -294,7 +258,7 @@ def ficha_generica(clave):
             st.caption(e["nota"])
 
 # ---------------------------------------------------------------------------
-# FICHA ESPECÍFICA: SEDIMENTADOR (Mantiene calculadora interactiva)
+# FICHA ESPECÍFICA: SEDIMENTADOR
 # ---------------------------------------------------------------------------
 def ficha_sedimentador():
     area = SED_L * SED_B
@@ -303,26 +267,19 @@ def ficha_sedimentador():
     
     st.header(e["nombre"])
 
-    col_info, col_plano = st.columns([1.2, 1])
-
-    with col_info:
+    with st.container():
         st.markdown(f"### 🏭 1. Tipo de industria")
         st.info(e["industria"])
 
         st.markdown(f"### ⚙️ 2. Qué es y para qué sirve (Uso general)")
         st.write(e["uso_general"])
-        st.write('**En nuestra planta:** El agua floculada entra por una tubería perforada ubicada bajo los paneles de sedimentación acelerada. Los flóculos caen hacia las dos bases piramidales y se purgan por dos válvulas de 3" hacia las bandejas de deshidratación.')
+        st.write("**En nuestra planta:** El agua floculada entra por una tubería perforada ubicada bajo los paneles de sedimentación acelerada. Los flóculos caen hacia las dos bases piramidales y se purgan por dos válvulas de 3\" hacia las bandejas de deshidratación.")
 
         st.markdown(f"### ⚖️ 3. Cuándo sí y cuándo no se usa")
         st.markdown("- **Cuándo sí:** Flóculos densos, caudal estable y SST moderados.")
         st.markdown("- **Cuándo no:** Partículas livianas, grasas o picos de caudal fuertes.")
 
         st.success(f"💡 **Dato curioso:** {e['dato_curioso']}")
-
-    with col_plano:
-        st.markdown(f"### 📐 Esquema en Negativo")
-        fig = e["plano_func"]()
-        st.pyplot(fig)
 
     st.markdown("---")
     st.subheader("📊 Parámetros de diseño y cálculo rápido")
@@ -379,7 +336,7 @@ if pagina == "inicio":
     """)
 
     st.markdown("---")
-    st.info("👉 **Instrucciones:** Selecciona un equipo o etapa en el menú de la barra lateral para explorar sus especificaciones técnicas detalladas y planos esquemáticos, o escanea los códigos QR ubicados en planta.")
+    st.info("👉 **Instrucciones:** Selecciona un equipo o etapa en el menú de la barra lateral para explorar sus especificaciones técnicas detalladas, o escanea los códigos QR ubicados en planta para acceder de forma rápida desde dispositivos móviles.")
 
 elif pagina == "sedimentador":
     ficha_sedimentador()

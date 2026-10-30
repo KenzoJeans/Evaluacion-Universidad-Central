@@ -6,7 +6,7 @@ import streamlit as st
 
 from planos3d import mostrar_plano
 
-APP_URL = "https://evaluacion-universidad-central-k7pajrjvmfi3wcverutpfp.streamlit.app/"  # <- poner la URL real de la app
+APP_URL = "https://TU-APP.streamlit.app"  # <- poner la URL real de la app
 
 st.set_page_config(page_title="Fichas técnicas PTAR - Kenzo Jeans", page_icon="💧", layout="wide",
                    initial_sidebar_state="expanded")
@@ -57,10 +57,10 @@ EQUIPOS = {
     },
     "homogenizacion": {
         "nombre": "Tanque de homogenización y neutralización", "tipo": "diseno", "V": 40.0, "V_total": 45.0,
-        "nota": "PROVISIONAL: 45 m³ totales; útil estimado con 0.4 m de franco libre. Altura real por medir.",
+        "nota": "PROVISIONAL: 45 m³ totales; útil estimado con 0.4 m de franco libre. Altura real por medir. Tanque enterrado: la boca queda al nivel del piso.",
         "industria": "Industrial / Ecualización de carga",
         "uso_general": "Recibe el agua de la torre y amortigua las variaciones de caudal, pH y carga de los baños de tinte. "
-                       "Aquí se ajusta el pH aplicando cal hidratada de forma manual.",
+                       "Aquí se ajusta el pH aplicando cal hidratada de forma manual (no hay sistema de dosificación ni respaldo).",
         "cuando_si": "Cuando hay picos de carga hidráulica o química que desestabilizarían el tratamiento fisicoquímico posterior.",
         "cuando_no": "Cuando el caudal y la calidad del agua ya son constantes, o el tanque está en limpieza por sedimentos acumulados.",
         "dato_curioso": "La bomba de 3 HP tiene una línea de recirculación al mismo tanque: sirve para regular el caudal "
@@ -94,7 +94,7 @@ EQUIPOS = {
         "nota": "Cilindro de Ø 1.8 m y 2.4 m de altura recta, en PRFV.",
         "industria": "Industrial / Tratamiento avanzado",
         "uso_general": "Oxidación química con peróxido de hidrógeno, dosificado con bomba de diafragma en la línea de "
-                       "recirculación, para reducir DQO y color remanentes.",
+                       "recirculación (bomba B1, que también mezcla el peróxido), para reducir DQO y color remanentes.",
         "cuando_si": "Cuando después del tratamiento fisicoquímico quedan color y materia orgánica oxidable que superan los límites.",
         "cuando_no": "Cuando la carga orgánica y el color ya cumplen la norma tras sedimentar.",
         "dato_curioso": "No es la última barrera: después vienen los filtros de arena, el de carbón y la salida. "
@@ -103,7 +103,7 @@ EQUIPOS = {
     "filtros": {
         "nombre": "Filtración (arena y carbón activado)", "tipo": "filtros",
         "nota": "3 filtros a presión de Ø 0.6 m y 1.5 m de altura recta: 2 de arena/grava (1.81 m totales) y 1 de carbón "
-                "activado (1.97 m totales). Alimentados por 2 bombas de 1.5 HP que alternan.",
+                "activado (1.97 m totales). Alimentados por las bombas B2 y B3 (1.5 HP), que alternan.",
         "industria": "Industrial y municipal / Pulimento del efluente",
         "uso_general": "Los filtros de arena retienen los flóculos que escapan del sedimentador; el de carbón activado "
                        "adsorbe color, tensoactivos y olor. Se limpian con retrolavado.",
@@ -112,6 +112,20 @@ EQUIPOS = {
         "dato_curioso": "Durante la filtración las válvulas de ½\" de la parte superior deben estar cerradas, y la válvula de alivio "
                         "limita la presión interna a 60 psi.",
     },
+}
+
+EQUIPOS["mf_uf"] = {
+    "nombre": "Microfiltración y ultrafiltración", "tipo": "membranas",
+    "nota": "Datos de la planta pendientes: tipo de membrana, área y flujo de diseño. Plano pendiente.",
+    "industria": "Industrial y municipal / Pulimento fino",
+    "uso_general": "Membranas que retienen por tamaño las partículas finas y coloides que pasaron los filtros. "
+                   "La microfiltración trabaja con poros de ~0.1-10 µm y la ultrafiltración de ~0.01-0.1 µm. "
+                   "Después de ellas el agua se almacena en el tanque de agua tratada.",
+    "cuando_si": "Cuando se necesita un efluente muy clarificado, con pocos sólidos finos y coloides.",
+    "cuando_no": "Cuando el agua llega con muchos sólidos o con oxidantes o temperaturas que la membrana no tolera: "
+                 "se ensucia rápido o se daña.",
+    "dato_curioso": "Su gran enemigo es el ensuciamiento (fouling): por eso se limpia con retrolavados y por eso todo el tren "
+                    "anterior existe, para entregarle un agua lo más limpia posible.",
 }
 
 SED_L, SED_B = 3.0, 1.5  # zona de sedimentación (m), según plano
@@ -198,7 +212,14 @@ def calc_filtros():
     st.caption("EBCT = volumen del lecho / caudal. Referencia típica para carbón: ~5-30 min (verificar).")
 
 
-CALCULOS = {"homogenizacion": calc_homogenizacion, "coagulacion": calc_coagulacion,
+def calc_mf():
+    st.subheader("🧮 Flujo por membrana:  J = Q / A")
+    area = st.number_input("Área de membrana (m²) — valor de ejemplo, pendiente de medir", 0.5, 500.0, 10.0, 0.5)
+    st.metric("Flujo (J)", f"{q_lmin * 60 / area:.1f} L/m²·h")
+    st.caption("Si el flujo es mayor al de diseño del fabricante, la membrana se ensucia más rápido.")
+
+
+CALCULOS = {"mf_uf": calc_mf, "homogenizacion": calc_homogenizacion, "coagulacion": calc_coagulacion,
             "sedimentador": calc_sedimentador, "filtros": calc_filtros}
 
 

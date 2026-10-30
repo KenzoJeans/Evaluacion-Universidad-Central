@@ -44,7 +44,7 @@ st.markdown(
 )
 
 # ---------------------------------------------------------------------------
-# DATOS TÉCNICOS DEL TREN DE TRATAMIENTO (Basados en tablas y descripciones oficiales)
+# DATOS TÉCNICOS DEL TREN DE TRATAMIENTO (Llaves corregidas y unificadas)
 # ---------------------------------------------------------------------------
 EQUIPOS = {
     "draga_rejillas": {
@@ -62,7 +62,7 @@ EQUIPOS = {
             "De forma permanente durante la recepción de las aguas residuales crudas (ARND) para evitar "
             "obstrucciones y daños mecánicos en las motobombas y equipos posteriores."
         ),
-        "quando_no": (
+        "cuando_no": (
             "No se debe operar sin la revisión periódica de acumulación de sólidos, ya que un bloqueo total "
             "provocaría desbordamientos en la cabecera de la planta."
         ),
@@ -86,11 +86,11 @@ EQUIPOS = {
             "Recibe el agua succionada por motobomba accionada por flotador para disminuir la temperatura "
             "del vertimiento por debajo de los 30 °C mediante caída y flujo de aire ascendente generado por un ventilador en la parte más alta."
         ),
-        "quando_si": (
+        "cuando_si": (
             "Siempre que el agua de tintorería ingrese a altas temperaturas, asegurando que los procesos "
             "biológicos y químicos posteriores no sufran choques térmicos."
         ),
-        "quando_no": (
+        "cuando_no": (
             "Cuando el efluente ya se encuentre a temperatura ambiente y no requiera disipación térmica."
         ),
         "dato_curioso": (
@@ -117,7 +117,7 @@ EQUIPOS = {
         "cuando_si": (
             "Para evitar picos de carga hidráulica y química que desestabilicen el tratamiento fisicoquímico posterior."
         ),
-        "quando_no": (
+        "cuando_no": (
             "Cuando el tanque requiera mantenimiento correctivo o vaciado total por acumulación de sedimentos pesados."
         ),
         "dato_curioso": (
@@ -139,7 +139,7 @@ EQUIPOS = {
         "cuando_si": (
             "Para la remoción eficaz de color verdadero, color aparente y sólidos coloidales suspendidos en el agua textil."
         ),
-        "quando_no": (
+        "cuando_no": (
             "Cuando el tren opere sin flujo de agua o sin dosificación de químicos, para evitar daños en el eje del agitador."
         ),
         "dato_curioso": (
@@ -158,10 +158,10 @@ EQUIPOS = {
             "Separa por gravedad los flóculos formados en la coagulación, obteniendo agua clarificada en la parte superior "
             "y lodos concentrados en sus bases piramidales."
         ),
-        "quando_si": (
+        "cuando_si": (
             "Cuando se obtienen flóculos densos gracias a una correcta dosificación en el tanque de coagulación."
         ),
-        "quando_no": (
+        "cuando_no": (
             "Cuando se presentan picos de caudal extremo que generen turbulencia e impidan la decantación de los lodos."
         ),
         "dato_curioso": (
@@ -180,10 +180,10 @@ EQUIPOS = {
             "Permite llevar a cabo reacciones de oxidación química o biológica para reducir la Demanda "
             "Química de Oxígeno (DQO) remanente y eliminar trazas finales de color."
         ),
-        "quando_si": (
+        "cuando_si": (
             "Cuando los límites de vertimiento exigidos por la autoridad ambiental son estrictos en DQO y color residual."
         ),
-        "quando_no": (
+        "cuando_no": (
             "Cuando la carga orgánica ya cumple con los parámetros normativos tras la etapa fisicoquímica."
         ),
         "dato_curioso": (
@@ -239,7 +239,6 @@ def ficha_generica(clave):
         st.markdown(f"- **Cuándo sí:** {e['cuando_si']}")
         st.markdown(f"- **Cuándo no:** {e['cuando_no']}")
 
-        # Si el equipo no es de diseño con calculadora, mostramos sus specs mecánicas
         if e.get("tipo") == "preliminar":
             st.markdown(f"### 🔧 4. Especificaciones Operativas")
             for spec in e.get("specs_mecanicas", []):
@@ -247,7 +246,6 @@ def ficha_generica(clave):
 
         st.success(f"💡 **Dato curioso:** {e['dato_curioso']}")
 
-    # Únicamente mostramos parámetros de diseño si el equipo es de tipo "diseno"
     if e.get("tipo") == "diseno":
         st.markdown("---")
         st.subheader("📊 Parámetros de diseño y cálculo rápido")
@@ -260,7 +258,7 @@ def ficha_generica(clave):
             st.caption(e["nota"])
 
 # ---------------------------------------------------------------------------
-# FICHA ESPECÍFICA: SEDIMENTADOR (Mantiene su calculadora interactiva)
+# FICHA ESPECÍFICA: SEDIMENTADOR
 # ---------------------------------------------------------------------------
 def ficha_sedimentador():
     area = SED_L * SED_B

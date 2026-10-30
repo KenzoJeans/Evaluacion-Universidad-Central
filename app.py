@@ -44,58 +44,71 @@ st.markdown(
 )
 
 # ---------------------------------------------------------------------------
-# DATOS COMPLETOS DEL TREN DE TRATAMIENTO DE LA PTAR
+# DATOS TÉCNICOS DEL TREN DE TRATAMIENTO (Basados en tablas y descripciones oficiales)
 # ---------------------------------------------------------------------------
 EQUIPOS = {
     "draga_rejillas": {
         "nombre": "Draga y Rejillas de Desbaste",
-        "V": 5.0,  # Volumen aproximado o de referencia para la estructura inicial
-        "nota": "Sistema preliminar de retención de sólidos gruesos.",
+        "tipo": "preliminar",
+        "V": 0.0,
+        "nota": "Sistema preliminar de retención de sólidos gruesos en serie paralela.",
         "industria": "Industrial / Tratamiento Preliminar Textil",
         "uso_general": (
             "Primera fase del sistema encargada de la remoción de sólidos de gran tamaño provenientes "
             "del área de tintorería, constituida por una draga y una serie en paralelo de cuatro rejillas "
-            "con diferentes diámetros."
+            "con diferentes diámetros para la retención de sólidos menores."
         ),
         "cuando_si": (
             "De forma permanente durante la recepción de las aguas residuales crudas (ARND) para evitar "
             "obstrucciones y daños mecánicos en las motobombas y equipos posteriores."
         ),
-        "cuando_no": (
+        "quando_no": (
             "No se debe operar sin la revisión periódica de acumulación de sólidos, ya que un bloqueo total "
             "provocaría desbordamientos en la cabecera de la planta."
         ),
         "dato_curioso": (
-            "Las rejillas de diferentes diámetros actúan como un filtro progresivo; si los sólidos grandes "
-            "pasan esta etapa, pueden enredarse en los impulsores de las bombas de transferencia."
+            "Las rejillas de diferentes diámetros actúan como un filtro progresivo para proteger los impulsores "
+            "de las bombas de transferencia frente a hilos y retazos textiles."
         ),
+        "specs_mecanicas": [
+            "**Componentes:** Draga de limpieza y 4 rejillas en paralelo.",
+            "**Función:** Retención de sólidos gruesos y menores.",
+            "**Mantenimiento:** Retiro periódico de residuos retenidos."
+        ]
     },
     "torre_enfriamiento": {
         "nombre": "Torre de Enfriamiento",
-        "V": 12.0,  # Volumen de operación estimado en foso/sumidero
-        "nota": "Incluye 12 paneles de polipropileno de alta densidad y ventilador de tiro forzado.",
+        "tipo": "preliminar",
+        "V": 0.0,
+        "nota": "Incluye 12 paneles de polipropileno de alta densidad y ventilador superior.",
         "industria": "Industrial / Acondicionamiento Térmico",
         "uso_general": (
             "Recibe el agua succionada por motobomba accionada por flotador para disminuir la temperatura "
-            "del vertimiento por debajo de los 30 °C mediante caída y flujo de aire ascendente generado por un ventilador superior."
+            "del vertimiento por debajo de los 30 °C mediante caída y flujo de aire ascendente generado por un ventilador en la parte más alta."
         ),
-        "cuando_si": (
+        "quando_si": (
             "Siempre que el agua de tintorería ingrese a altas temperaturas, asegurando que los procesos "
-            "biológicos y químicos posteriores no se vean afectados por el choque térmico."
+            "biológicos y químicos posteriores no sufran choques térmicos."
         ),
-        "cuando_no": (
-            "Cuando el agua ya se encuentre a temperatura ambiente y no requiera disipación térmica, "
-            "evitando consumos energéticos innecesarios en el ventilador."
+        "quando_no": (
+            "Cuando el efluente ya se encuentre a temperatura ambiente y no requiera disipación térmica."
         ),
         "dato_curioso": (
-            "Los 12 paneles de polipropileno de alta densidad ubicados en su interior no solo ayudan al intercambio "
-            "térmico, sino que actúan como trampa final para retirar sólidos livianos no atrapados en la draga."
+            "Los 12 paneles de polipropileno de alta densidad ubicados en su interior no solo optimizan el intercambio "
+            "térmico, sino que actúan como trampa final para retirar sólidos flotantes que pasaron la draga."
         ),
+        "specs_mecanicas": [
+            "**Rendimiento térmico:** Disminución del vertimiento por debajo de 30 °C.",
+            "**Medio de contacto:** 12 paneles de polipropileno de alta densidad.",
+            "**Sistema de aire:** Ventilador superior de tiro forzado."
+        ]
     },
     "homogenizacion": {
         "nombre": "Tanque de Homogenización",
-        "V": 28.0,
-        "nota": "Capacidad de 28 m³. Cuenta con bomba sumergible de 3 HP y línea de recirculación.",
+        "tipo": "diseno",
+        "V": 12.0,  # Volumen útil m³ según Tabla 1[cite: 7]
+        "V_total": 14.0,
+        "nota": "Dimensiones: 5.1 m largo × 2.4 m ancho × 1.2 m altura total (1.0 m útil)[cite: 7].",
         "industria": "Industrial / Ecualización de Carga",
         "uso_general": (
             "Almacena y mezcla el efluente proveniente de la torre de enfriamiento para estandarizar el caudal, "
@@ -104,7 +117,7 @@ EQUIPOS = {
         "cuando_si": (
             "Para evitar picos de carga hidráulica y química que desestabilicen el tratamiento fisicoquímico posterior."
         ),
-        "cuando_no": (
+        "quando_no": (
             "Cuando el tanque requiera mantenimiento correctivo o vaciado total por acumulación de sedimentos pesados."
         ),
         "dato_curioso": (
@@ -114,8 +127,10 @@ EQUIPOS = {
     },
     "coagulacion": {
         "nombre": "Tanque de Coagulación-Floculación",
-        "V": 2.89,
-        "nota": "Tanque tronco-cónico con agitador de 0.5 HP.",
+        "tipo": "diseno",
+        "V": 2.89,  # Volumen útil m³ según Tabla 1[cite: 8]
+        "V_total": 3.74,
+        "nota": "Cilíndrico con base cónica. Diámetro: 1.5 m, Altura recta: 1.5 m, Altura cono: 0.5 m, Altura total con patas: 3.2 m[cite: 8].",
         "industria": "Industrial / Tratamiento Fisicoquímico",
         "uso_general": (
             "Tanque cilíndrico con base cónica y un agitador interno accionado por un motor de 0.5 HP a velocidad constante. "
@@ -128,14 +143,16 @@ EQUIPOS = {
             "Cuando el tren opere sin flujo de agua o sin dosificación de químicos, para evitar daños en el eje del agitador."
         ),
         "dato_curioso": (
-            "La geometría cónica del tanque combinada con el agitador constante evita puntos muertos donde los "
-            "flóculos químicos puedan acumularse prematuramente."
+            "El agitador de 0.5 HP permanece encendido a velocidad constante mientras ingresa el agua, garantizando "
+            "una mezcla química homogénea antes del paso al sedimentador."
         ),
     },
     "sedimentador": {
         "nombre": "Sedimentador Clarificador",
-        "V": 9.11,
-        "nota": "Volumen útil según tabla de diseño. Dimensiones: 3.8 x 1.5 m.",
+        "tipo": "diseno",
+        "V": 9.11,  # Volumen útil m³ según Tabla 3[cite: 9]
+        "V_total": 10.8,
+        "nota": "Dimensiones: 3.8 m largo × 1.5 m ancho × 1.7 m alto. 2 bases piramidales de 0.75 m de alto[cite: 9].",
         "industria": "Industrial y Municipal / Separación Sólido-Líquido",
         "uso_general": (
             "Separa por gravedad los flóculos formados en la coagulación, obteniendo agua clarificada en la parte superior "
@@ -154,8 +171,10 @@ EQUIPOS = {
     },
     "oxidacion": {
         "nombre": "Tanque de Oxidación",
-        "V": 5.8,
-        "nota": "Volumen útil según tabla de diseño.",
+        "tipo": "diseno",
+        "V": 5.8,   # Volumen útil m³ según Tabla 3[cite: 10]
+        "V_total": 6.1,
+        "nota": "Dimensiones: Diámetro 1.8 m, Altura recta 2.4 m[cite: 10].",
         "industria": "Industrial / Tratamiento Avanzado o Afinado",
         "uso_general": (
             "Permite llevar a cabo reacciones de oxidación química o biológica para reducir la Demanda "
@@ -220,17 +239,28 @@ def ficha_generica(clave):
         st.markdown(f"- **Cuándo sí:** {e['cuando_si']}")
         st.markdown(f"- **Cuándo no:** {e['cuando_no']}")
 
+        # Si el equipo no es de diseño con calculadora, mostramos sus specs mecánicas
+        if e.get("tipo") == "preliminar":
+            st.markdown(f"### 🔧 4. Especificaciones Operativas")
+            for spec in e.get("specs_mecanicas", []):
+                st.markdown(f"- {spec}")
+
         st.success(f"💡 **Dato curioso:** {e['dato_curioso']}")
 
-    st.markdown("---")
-    st.subheader("📊 Parámetros de diseño y cálculo rápido")
-    c1, c2 = st.columns(2)
-    c1.metric("Volumen útil / Referencia", f"{e['V']} m³")
-    c2.metric("TRH (Caudal actual)", f"{e['V'] / q_m3h:.2f} h" if q_m3h > 0 else "N/A")
-    st.caption(e["nota"])
+    # Únicamente mostramos parámetros de diseño si el equipo es de tipo "diseno"
+    if e.get("tipo") == "diseno":
+        st.markdown("---")
+        st.subheader("📊 Parámetros de diseño y cálculo rápido")
+        c1, c2 = st.columns(2)
+        c1.metric("Volumen Útil", f"{e['V']} m³")
+        c2.metric("TRH (Caudal actual)", f"{e['V'] / q_m3h:.2f} h" if q_m3h > 0 else "N/A")
+        if "V_total" in e:
+            st.caption(f"Volumen total: {e['V_total']} m³ | {e['nota']}")
+        else:
+            st.caption(e["nota"])
 
 # ---------------------------------------------------------------------------
-# FICHA ESPECÍFICA: SEDIMENTADOR (Conserva calculadora interactiva)
+# FICHA ESPECÍFICA: SEDIMENTADOR (Mantiene su calculadora interactiva)
 # ---------------------------------------------------------------------------
 def ficha_sedimentador():
     area = SED_L * SED_B
@@ -254,6 +284,12 @@ def ficha_sedimentador():
         st.success(f"💡 **Dato curioso:** {e['dato_curioso']}")
 
     st.markdown("---")
+    st.subheader("📊 Parámetros de diseño y cálculo rápido")
+    c1, c2 = st.columns(2)
+    c1.metric("Volumen Útil", f"{v} m³")
+    c2.metric("TRH (Caudal actual)", f"{v / q_m3h:.2f} h" if q_m3h > 0 else "N/A")
+    st.caption(e["nota"])
+
     st.subheader("📐 Dimensionamiento y Fórmulas")
     st.latex(r"A = L \times B \qquad CS = \frac{Q}{A} \qquad TRH = \frac{V}{Q}")
     st.caption("A: área superficial (m²) · CS: carga superficial (m³/m²·d) · Q: caudal · V: volumen útil")

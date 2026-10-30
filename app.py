@@ -1,6 +1,7 @@
 import io
 import qrcode
 import streamlit as st
+from planos3d import mostrar_plano
 
 st.set_page_config(
     page_title="Fichas técnicas PTAR - Kenzo Jeans", 

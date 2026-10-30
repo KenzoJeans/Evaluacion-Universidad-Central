@@ -283,6 +283,7 @@ def ficha_sedimentador():
 
         st.success(f"💡 **Dato curioso:** {e['dato_curioso']}")
 
+    mostrar_plano("sedimentador")
     st.markdown("---")
     st.subheader("📊 Parámetros de diseño y cálculo rápido")
     c1, c2 = st.columns(2)

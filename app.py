@@ -153,7 +153,7 @@ EQUIPOS = {
         "tipo": "diseno",
         "V": 9.11,  # Volumen útil m³ según Tabla 3[cite: 9]
         "V_total": 10.8,
-        "nota": "Dimensiones: 3.8 m largo × 1.5 m ancho × 1.7 m alto. 2 bases piramidales de 0.75 m de alto[cite: 9].",
+        "nota": "Dimensiones: 3.8 m largo × 1.5 m ancho × 1.7 m alto. 2 bases piramidales de 0.75 m de alto.",
         "industria": "Industrial y Municipal / Separación Sólido-Líquido",
         "uso_general": (
             "Separa por gravedad los flóculos formados en la coagulación, obteniendo agua clarificada en la parte superior "
@@ -194,7 +194,7 @@ EQUIPOS = {
 }
 
 CAUDAL_DEFECTO_LMIN = 100.0  
-SED_L, SED_B = 3.8, 1.5  
+SED_L, SED_B = 3.0, 1.5  
 
 # ---------------------------------------------------------------------------
 # BARRA LATERAL: Logo grande y controles

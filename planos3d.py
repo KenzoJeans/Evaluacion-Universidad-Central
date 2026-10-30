@@ -92,8 +92,28 @@ def _oxidacion():
             _txt(R + 0.2, 0, H, "Ø 1.8 m"), _txt(-R - 0.4, 0, H / 2, "2.4 m")]
 
 
-PLANOS = {"homogenizacion": _homogenizacion, "coagulacion": _coagulacion,
-          "sedimentador": _sedimentador, "oxidacion": _oxidacion}
+def _filtro(cx, H, r=0.3, neck=0.12):
+    return (_cilindro(cx, 0, 0, r, 1.5) + _circ(cx, 0, 0.25, r) + _gen(cx, 0, r, 1.5, neck, H - 0.05)
+            + _cilindro(cx, 0, H - 0.05, neck, 0.05) + _circ(cx, 0, H, 0.18))
+
+
+def _filtros():
+    fs = [(0.0, 1.81, "Filtro 1 · arena 1.81 m"), (0.9, 1.81, "Filtro 2 · arena 1.81 m"),
+          (1.8, 1.97, "Filtro 3 · carbón 1.97 m")]
+    t = [_tr(_filtro(x, h)) for x, h, _ in fs]
+    t += [_tr(_caja(x + 0.3, -0.1, 0.35, 0.08, 0.2, 0.25), PANEL, 3) for x, _, _ in fs]
+    return t + [_txt(x, 0, h + 0.2, n) for x, h, n in fs]
+
+
+def _torre():  # ILUSTRATIVA: medidas provisionales hasta medir la torre real
+    ventilador = _circ(0.8, 0.6, 4.55, 0.4) + [((0.4, 0.6, 4.55), (1.2, 0.6, 4.55)), ((0.8, 0.2, 4.55), (0.8, 1.0, 4.55))]
+    return [_tr(_caja(0, 0, 0, 1.6, 1.2, 1.3)), _tr(_caja(0.3, 0.2, 1.3, 1.0, 0.8, 3.0)),
+            _tr(_caja(0.3, -0.02, 0.4, 1.0, 0.02, 0.5), PANEL, 3), _tr(_cilindro(0.8, 0.6, 4.3, 0.4, 0.25)),
+            _tr(ventilador, PANEL, 3), _txt(0.8, 0.6, 5.0, "ILUSTRATIVO · medidas por confirmar")]
+
+
+PLANOS = {"homogenizacion": _homogenizacion, "coagulacion": _coagulacion, "sedimentador": _sedimentador,
+          "oxidacion": _oxidacion, "filtros": _filtros, "torre_enfriamiento": _torre}
 LEYENDA = "Azul: estructura · Verde: nivel de agua · Naranja: paneles / agitador · Lila: tuberías perforadas. Arrastra para girar."
 
 
@@ -109,5 +129,5 @@ def plano_3d(clave):
 def mostrar_plano(clave):
     if clave in PLANOS:
         st.subheader("🧊 Plano 3D")
-        st.plotly_chart(plano_3d(clave), use_container_width=True)
+        st.plotly_chart(plano_3d(clave), width="stretch")
         st.caption(LEYENDA)

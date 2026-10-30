@@ -247,6 +247,7 @@ def ficha_generica(clave):
 
         st.success(f"💡 **Dato curioso:** {e['dato_curioso']}")
 
+    mostrar_plano(clave)
     if e.get("tipo") == "diseno":
         st.markdown("---")
         st.subheader("📊 Parámetros de diseño y cálculo rápido")

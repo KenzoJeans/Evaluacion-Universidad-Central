@@ -131,11 +131,16 @@ def plano_3d(clave, solido=False):
 def mostrar_plano(clave):
     if clave in PLANOS:
         st.subheader("🧊 Plano 3D")
-        solido = False
+        vista = "Alambre"
         if clave in SOLIDOS:
-            solido = st.radio("Vista", ["Alambre", "Sólido"], horizontal=True, key=f"vista_{clave}") == "Sólido"
-        st.plotly_chart(plano_3d(clave, solido), width="stretch")
-        st.caption(LEYENDA)
+            vistas = ["Alambre", "Sólido"] + (["Three.js (prueba)"] if clave == "sedimentador" else [])
+            vista = st.radio("Vista", vistas, horizontal=True, key=f"vista_{clave}")
+        if vista.startswith("Three"):
+            from visor3d import visor_sedimentador
+            visor_sedimentador()
+        else:
+            st.plotly_chart(plano_3d(clave, vista == "Sólido"), width="stretch")
+            st.caption(LEYENDA)
 
 
 # ---------------------------- vista sólida (prototipo: sedimentador) ----------------------------

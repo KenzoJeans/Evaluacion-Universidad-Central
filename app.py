@@ -3,7 +3,7 @@ import qrcode
 import streamlit as st
 
 st.set_page_config(
-    page_title="Fichas técnicas PTAR", 
+    page_title="Fichas técnicas PTAR - Kenzo Jeans", 
     page_icon="💧", 
     layout="wide",
     initial_sidebar_state="expanded"
@@ -25,12 +25,6 @@ st.markdown(
         border-right: 1px solid #30363d;
     }
 
-    /* Tarjetas de contenido estilizadas nativas */
-    div.element-container div.stMarkdown {
-        color: #fafafa;
-    }
-    
-    /* Métricas con diseño corporativo */
     div[data-testid="stMetric"] {
         background-color: #1f242d;
         padding: 15px;
@@ -50,99 +44,131 @@ st.markdown(
 )
 
 # ---------------------------------------------------------------------------
-# DATOS DE LA PLANTA Y EQUIPOS
+# DATOS COMPLETOS DEL TREN DE TRATAMIENTO DE LA PTAR
 # ---------------------------------------------------------------------------
 EQUIPOS = {
-    "homogenizacion": {
-        "nombre": "Tanque de homogenización",
-        "V": 40.0,
-        "nota": "PROVISIONAL: 45 m³ totales con franco libre supuesto de 0.4 m. Verificar altura en sitio.",
-        "industria": "Industrial / Textil y Tintorería",
+    "draga_rejillas": {
+        "nombre": "Draga y Rejillas de Desbaste",
+        "V": 5.0,  # Volumen aproximado o de referencia para la estructura inicial
+        "nota": "Sistema preliminar de retención de sólidos gruesos.",
+        "industria": "Industrial / Tratamiento Preliminar Textil",
         "uso_general": (
-            "Almacena y mezcla el agua residual proveniente de los diferentes procesos productivos "
-            "(lavado, teñido, rebosaderos) para estandarizar el caudal, la temperatura, el pH y la concentración "
-            "de contaminantes antes de que ingresen al sistema fisicoquímico."
+            "Primera fase del sistema encargada de la remoción de sólidos de gran tamaño provenientes "
+            "del área de tintorería, constituida por una draga y una serie en paralelo de cuatro rejillas "
+            "con diferentes diámetros."
         ),
         "cuando_si": (
-            "Siempre que existan descargas discontinuas o con alta variabilidad en color, temperatura "
-            "y carga orgánica (típico en tintorerías por el cambio de baches o lotes de producción)."
+            "De forma permanente durante la recepción de las aguas residuales crudas (ARND) para evitar "
+            "obstrucciones y daños mecánicos en las motobombas y equipos posteriores."
         ),
         "cuando_no": (
-            "Cuando el efluente tenga una concentración extrema de sólidos sedimentables pesados que deban "
-            "retirarse previamente en un desarenador para evitar acumulación excesiva en el fondo."
+            "No se debe operar sin la revisión periódica de acumulación de sólidos, ya que un bloqueo total "
+            "provocaría desbordamientos en la cabecera de la planta."
         ),
         "dato_curioso": (
-            "En la industria textil, los baños de tinte cambian drásticamente de pH (ácido a básico) "
-            "en cuestión de minutos. Sin este tanque, los equipos de coagulación posteriores colapsarían "
-            "por falta de estabilidad química."
+            "Las rejillas de diferentes diámetros actúan como un filtro progresivo; si los sólidos grandes "
+            "pasan esta etapa, pueden enredarse en los impulsores de las bombas de transferencia."
+        ),
+    },
+    "torre_enfriamiento": {
+        "nombre": "Torre de Enfriamiento",
+        "V": 12.0,  # Volumen de operación estimado en foso/sumidero
+        "nota": "Incluye 12 paneles de polipropileno de alta densidad y ventilador de tiro forzado.",
+        "industria": "Industrial / Acondicionamiento Térmico",
+        "uso_general": (
+            "Recibe el agua succionada por motobomba accionada por flotador para disminuir la temperatura "
+            "del vertimiento por debajo de los 30 °C mediante caída y flujo de aire ascendente generado por un ventilador superior."
+        ),
+        "cuando_si": (
+            "Siempre que el agua de tintorería ingrese a altas temperaturas, asegurando que los procesos "
+            "biológicos y químicos posteriores no se vean afectados por el choque térmico."
+        ),
+        "cuando_no": (
+            "Cuando el agua ya se encuentre a temperatura ambiente y no requiera disipación térmica, "
+            "evitando consumos energéticos innecesarios en el ventilador."
+        ),
+        "dato_curioso": (
+            "Los 12 paneles de polipropileno de alta densidad ubicados en su interior no solo ayudan al intercambio "
+            "térmico, sino que actúan como trampa final para retirar sólidos livianos no atrapados en la draga."
+        ),
+    },
+    "homogenizacion": {
+        "nombre": "Tanque de Homogenización",
+        "V": 28.0,
+        "nota": "Capacidad de 28 m³. Cuenta con bomba sumergible de 3 HP y línea de recirculación.",
+        "industria": "Industrial / Ecualización de Carga",
+        "uso_general": (
+            "Almacena y mezcla el efluente proveniente de la torre de enfriamiento para estandarizar el caudal, "
+            "la temperatura y amortiguar las fluctuaciones drásticas del pH características de los baños de tinte."
+        ),
+        "cuando_si": (
+            "Para evitar picos de carga hidráulica y química que desestabilicen el tratamiento fisicoquímico posterior."
+        ),
+        "cuando_no": (
+            "Cuando el tanque requiera mantenimiento correctivo o vaciado total por acumulación de sedimentos pesados."
+        ),
+        "dato_curioso": (
+            "La bomba sumergible de 3 HP cuenta con una tubería de recirculación que permite regular con precisión "
+            "el caudal exacto que se envía hacia el tanque de coagulación."
         ),
     },
     "coagulacion": {
-        "nombre": "Tanque de coagulación",
+        "nombre": "Tanque de Coagulación-Floculación",
         "V": 2.89,
-        "nota": "Volumen útil según tabla de diseño.",
+        "nota": "Tanque tronco-cónico con agitador de 0.5 HP.",
         "industria": "Industrial / Tratamiento Fisicoquímico",
         "uso_general": (
-            "Espacio donde se dosifican y mezclan rápidamente productos químicos (coagulantes como policloruro "
-            "de aluminio o sales de fierro) para desestabilizar las cargas eléctricas de los coloides suspendidos "
-            "y colorantes disueltos."
+            "Tanque cilíndrico con base cónica y un agitador interno accionado por un motor de 0.5 HP a velocidad constante. "
+            "Realiza la mezcla rápida del producto coagulante y solución alcalina para la regulación del pH y desestabilización de coloides."
         ),
         "cuando_si": (
-            "Para remover color verdadero, color aparente, turbiedad fina y materia orgánica coloidal "
-            "que no se retiene por gravedad simple."
+            "Para la remoción eficaz de color verdadero, color aparente y sólidos coloidales suspendidos en el agua textil."
         ),
-        "cuando_no": (
-            "Cuando el agua contiene exclusivamente contaminantes disueltos biodegradables que se eliminan "
-            "mejor mediante tratamientos biológicos directos sin consumo alto de químicos."
+        "quando_no": (
+            "Cuando el tren opere sin flujo de agua o sin dosificación de químicos, para evitar daños en el eje del agitador."
         ),
         "dato_curioso": (
-            "La mezcla en este tanque debe ser ultra rápida y turbulenta (usualmente con tiempos de retención "
-            "de segundos) porque si la agitación es lenta, el químico no se desparrama bien y se desaprovecha."
+            "La geometría cónica del tanque combinada con el agitador constante evita puntos muertos donde los "
+            "flóculos químicos puedan acumularse prematuramente."
         ),
     },
     "sedimentador": {
-        "nombre": "Sedimentador clarificador",
+        "nombre": "Sedimentador Clarificador",
         "V": 9.11,
-        "nota": "Volumen útil según tabla de diseño.",
+        "nota": "Volumen útil según tabla de diseño. Dimensiones: 3.8 x 1.5 m.",
         "industria": "Industrial y Municipal / Separación Sólido-Líquido",
         "uso_general": (
-            "Separa por gravedad los flóculos formados en la etapa de coagulación-floculación, "
-            "produciendo agua clarificada en la parte superior y lodo concentrado en las tolvas inferiores."
+            "Separa por gravedad los flóculos formados en la coagulación, obteniendo agua clarificada en la parte superior "
+            "y lodos concentrados en sus bases piramidales."
         ),
-        "cuando_si": (
-            "Cuando se obtienen flóculos densos y pesados, con un caudal de alimentación estable "
-            "garantizado por el tanque de homogenización."
+        "quando_si": (
+            "Cuando se obtienen flóculos densos gracias a una correcta dosificación en el tanque de coagulación."
         ),
-        "cuando_no": (
-            "Cuando predominan partículas livianas o emulsiones de grasas/aceites que tienden a flotar "
-            "en lugar de hundirse (para eso se requiere flotación por aire disuelto - DAF)."
+        "quando_no": (
+            "Cuando se presentan picos de caudal extremo que generen turbulencia e impidan la decantación de los lodos."
         ),
         "dato_curioso": (
-            "El principio físico detrás de los sedimentadores modernos se basa en la ley de Stokes "
-            "y los criterios de Hazen desarrollados hace más de un siglo, los cuales siguen vigentes."
+            "Emplea el principio de Hazen y velocidad de sedimentación para garantizar que el agua clarificada cumpla "
+            "con los estándares estéticos antes de pasar a la oxidación."
         ),
     },
     "oxidacion": {
-        "nombre": "Tanque de oxidación",
+        "nombre": "Tanque de Oxidación",
         "V": 5.8,
         "nota": "Volumen útil según tabla de diseño.",
         "industria": "Industrial / Tratamiento Avanzado o Afinado",
         "uso_general": (
             "Permite llevar a cabo reacciones de oxidación química o biológica para reducir la Demanda "
-            "Química de Oxígeno (DQO) remanente, destruir compuestos recalcitrantes o eliminar trazas de color "
-            "que sobrevivieron al proceso fisicoquímico."
+            "Química de Oxígeno (DQO) remanente y eliminar trazas finales de color."
         ),
-        "cuando_si": (
-            "Cuando los límites de vertimiento exigidos por la autoridad ambiental son muy estrictos "
-            "en cuanto a DQO residual y color."
+        "quando_si": (
+            "Cuando los límites de vertimiento exigidos por la autoridad ambiental son estrictos en DQO y color residual."
         ),
-        "cuando_no": (
-            "Cuando la carga orgánica principal es fácilmente tratable solo con los procesos primarios y "
-            "secundarios, o cuando el costo energético/químico de la oxidación avanzada no se justifica."
+        "quando_no": (
+            "Cuando la carga orgánica ya cumple con los parámetros normativos tras la etapa fisicoquímica."
         ),
         "dato_curioso": (
-            "En aguas textiles, este paso actúa como la 'barrera final' para asegurar que el agua cumpla "
-            "con los parámetros estéticos y normativos antes de su descarga o reúso."
+            "Actúa como la barrera final de seguridad dentro del tren de tratamiento de la PTAR antes de la disposición final."
         ),
     },
 }
@@ -173,11 +199,11 @@ if inicial not in paginas:
     inicial = "inicio"
 
 with st.sidebar:
-    st.markdown("### 🎛️ Navegación")
-    pagina = st.selectbox("Seleccionar Equipo", paginas, index=paginas.index(inicial), format_func=etiquetas.get)
+    st.markdown("### 🎛️ Navegación del Tren")
+    pagina = st.selectbox("Seleccionar Etapa / Equipo", paginas, index=paginas.index(inicial), format_func=etiquetas.get)
 
 # ---------------------------------------------------------------------------
-# PLANTILLA DE FICHA GENÉRICA (Corregida con Markdown nativo y vistoso)
+# PLANTILLA DE FICHA GENÉRICA
 # ---------------------------------------------------------------------------
 def ficha_generica(clave):
     e = EQUIPOS[clave]
@@ -194,18 +220,17 @@ def ficha_generica(clave):
         st.markdown(f"- **Cuándo sí:** {e['cuando_si']}")
         st.markdown(f"- **Cuándo no:** {e['cuando_no']}")
 
-        format_curioso = f"💡 **Dato curioso:** {e['dato_curioso']}"
-        st.success(format_curioso)
+        st.success(f"💡 **Dato curioso:** {e['dato_curioso']}")
 
     st.markdown("---")
     st.subheader("📊 Parámetros de diseño y cálculo rápido")
     c1, c2 = st.columns(2)
-    c1.metric("Volumen útil", f"{e['V']} m³")
-    c2.metric("TRH (Caudal actual)", f"{e['V'] / q_m3h:.2f} h")
+    c1.metric("Volumen útil / Referencia", f"{e['V']} m³")
+    c2.metric("TRH (Caudal actual)", f"{e['V'] / q_m3h:.2f} h" if q_m3h > 0 else "N/A")
     st.caption(e["nota"])
 
 # ---------------------------------------------------------------------------
-# FICHA ESPECÍFICA: SEDIMENTADOR
+# FICHA ESPECÍFICA: SEDIMENTADOR (Conserva calculadora interactiva)
 # ---------------------------------------------------------------------------
 def ficha_sedimentador():
     area = SED_L * SED_B
@@ -253,7 +278,7 @@ def ficha_sedimentador():
 # GENERADOR DE QR
 # ---------------------------------------------------------------------------
 def pagina_qr():
-    st.header("📱 Códigos QR por equipo")
+    st.header("📱 Códigos QR por etapa y equipo")
     base = st.text_input("URL base de la app", "https://TU-APP.streamlit.app").rstrip("/")
     for clave, e in EQUIPOS.items():
         buf = io.BytesIO()
@@ -264,7 +289,7 @@ def pagina_qr():
         col2.download_button("Descargar PNG", buf.getvalue(), f"qr_{clave}.png", "image/png", key=f"dl_{clave}")
 
 # ---------------------------------------------------------------------------
-# ENRUTADOR PRINCIPAL (Con sección de Kenzo Jeans y compromiso ambiental)
+# ENRUTADOR PRINCIPAL
 # ---------------------------------------------------------------------------
 if pagina == "inicio":
     st.title("💧 Fichas técnicas de la PTAR - Kenzo Jeans")
@@ -273,11 +298,11 @@ if pagina == "inicio":
     ### 🌿 Compromiso Ambiental y Sostenibilidad
     En **Kenzo Jeans**, entendemos que la moda y la innovación industrial deben marchar de la mano con la protección de los recursos naturales. Nuestro compromiso con el medio ambiente se refleja en la gestión integral de nuestros procesos productivos, asegurando que cada gota de agua utilizada en las etapas de lavandería y tintorería reciba un tratamiento riguroso antes de su retorno al sistema.
     
-    El sistema de tratamiento de aguas residuales (**PTAR**) representa el núcleo de nuestra política de producción limpia y economía circular, garantizando el cumplimiento estricto de las normativas ambientales vigentes y minimizando nuestra huella hídrica.
+    El tren de tratamiento de aguas residuales (**PTAR**) representa el núcleo de nuestra política de producción limpia y economía circular, garantizando el cumplimiento estricto de las normativas ambientales vigentes y minimizando nuestra huella hídrica.
     """)
 
     st.markdown("---")
-    st.info("👉 **Instrucciones:** Selecciona un equipo en el menú de la barra lateral para explorar sus especificaciones técnicas detalladas, o escanea los códigos QR ubicados en planta para acceder de forma rápida desde dispositivos móviles.")
+    st.info("👉 **Instrucciones:** Selecciona un equipo o etapa en el menú de la barra lateral para explorar sus especificaciones técnicas detalladas, o escanea los códigos QR ubicados en planta para acceder de forma rápida desde dispositivos móviles.")
 
 elif pagina == "sedimentador":
     ficha_sedimentador()

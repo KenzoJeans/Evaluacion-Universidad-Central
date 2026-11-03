@@ -107,10 +107,10 @@ EQUIPOS = {
         "nombre": "Filtración (arena y carbón activado)", "tipo": "filtros",
         "nota": "3 filtros a presión de Ø 0.6 m y 1.5 m de altura recta: 2 de arena/grava (1.81 m totales) y 1 de carbón "
                 "activado (1.97 m totales). Alimentados por las bombas B2 y B3 (1.5 HP), que alternan.",
-        "industria": "Industrial y municipal / Pulimento del efluente",
+        "industria": "Industrial y municipal / Mejora del efluente",
         "uso_general": "Los filtros de arena retienen los flóculos que escapan del sedimentador; el de carbón activado "
                        "adsorbe color, tensoactivos y olor. Se limpian con retrolavado.",
-        "cuando_si": "Para pulir el agua clarificada antes de la descarga, cuando aún arrastra sólidos finos o color.",
+        "cuando_si": "Para "pulir" el agua clarificada antes de la descarga, cuando aún arrastra sólidos finos o color.",
         "cuando_no": "Cuando el agua llega con muchos sólidos (se colmata rápido): deben retirarse antes, en el sedimentador.",
         "dato_curioso": "Durante la filtración las válvulas de ½\" de la parte superior deben estar cerradas, y la válvula de alivio "
                         "limita la presión interna a 60 psi.",
@@ -120,7 +120,7 @@ EQUIPOS = {
 EQUIPOS["mf_uf"] = {
     "nombre": "Microfiltración y ultrafiltración", "tipo": "membranas",
     "nota": "Datos de la planta pendientes: tipo de membrana, área y flujo de diseño. Plano pendiente.",
-    "industria": "Industrial y municipal / Pulimento fino",
+    "industria": "Industrial y municipal / Química",
     "uso_general": "Membranas que retienen por tamaño las partículas finas y coloides que pasaron los filtros. "
                    "La microfiltración trabaja con poros de ~0.1-10 µm y la ultrafiltración de ~0.01-0.1 µm. "
                    "Después de ellas el agua se almacena en el tanque de agua tratada.",

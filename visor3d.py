@@ -80,12 +80,24 @@ def _filtros():
     return it + fl
 
 
-def _torre():  # ILUSTRATIVA: medidas provisionales
-    it = [caja([0, 0, 0], [1.6, 1.2, 1.3], AZUL, 0.3, 1), caja([0.3, 0.2, 1.3], [1.0, 0.8, 3.0], AZUL, 0.3, 1),
-          caja([0.3, -0.02, 0.4], [1.0, 0.02, 0.5], LODO), cil([0.8, 0.6, 4.3], 0.4, 0.25, "z", GRIS),
-          caja([0.4, 0.58, 4.55], [0.8, 0.04, 0.02]), caja([0.78, 0.2, 4.55], [0.04, 0.8, 0.02])]
-    return it + [flujo([[0.8, 0.6, 4.1], [0.8, 0.6, 1.6]]), flujo([[0.8, -0.9, 0.65], [0.8, 0.2, 0.65]], AIRE),
-                 flujo([[0.8, 0.6, 1.4], [0.8, 0.6, 5.2]], AIRE)]
+AIRE_SUBE = True  # False si el ventilador sopla el aire hacia abajo (confirmar en planta)
+
+
+def _torre():  # ~6 m de alto, 1.3 x 1.3 m (estimadas); el interior es ilustrativo
+    a, hb = 1.3, 5.35
+    it = [caja([0, 0, 0], [a, a, hb], AZUL, 0.3, 1), cil([0, a / 2, hb], a / 2, a, "x", AZUL, 0.3, 1),
+          caja([0.15, -0.02, 0.4], [1.0, 0.02, 0.6], LODO), caja([-1.3, 0.4, 0], [0.4, 0.5, 0.3], GRIS),
+          cil([-0.2, a / 2, 0], 0.04, 5.2), cil([-0.2, a / 2, 5.2], 0.04, 0.9, "x"),
+          cil([a / 2, a / 2, 5.0], 0.5, 0.04, "z", GRIS, 0.6), caja([0.15, a / 2 - 0.02, 5.02], [1.0, 0.04, 0.02], ACERO),
+          caja([a / 2 - 0.02, 0.15, 5.02], [0.04, 1.0, 0.02], ACERO)]
+    it += [caja([0.1, 0.1, 1.4 + k * 0.3], [1.1, 1.1, 0.02], "#58a6ff", 0.5) for k in range(12)]
+    it += [flujo([[-2.0, .65, .15], [-0.2, .65, .15], [-0.2, .65, 5.2], [0.65, .65, 5.2]]),
+           flujo([[0.4, .65, 4.9], [0.4, .65, 1.0]]), flujo([[0.9, .65, 4.9], [0.9, .65, 1.0]])]
+    if AIRE_SUBE:
+        it += [flujo([[0.65, -0.9, .7], [0.65, .3, .7]], AIRE), flujo([[0.65, .65, 1.2], [0.65, .65, 6.6]], AIRE)]
+    else:
+        it += [flujo([[0.65, .65, 6.4], [0.65, .65, 1.2]], AIRE), flujo([[0.65, .3, .7], [0.65, -0.9, .7]], AIRE)]
+    return it
 
 
 ESCENAS = {"sedimentador": _sedimentador, "coagulacion": _coagulacion, "homogenizacion": _homogenizacion,

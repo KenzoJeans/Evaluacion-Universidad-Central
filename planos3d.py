@@ -116,8 +116,16 @@ def _torre():  # ILUSTRATIVA: ~6 m de alto, 1.3 x 1.3 m (estimadas)
             _txt(a / 2, a / 2, 6.6, "ILUSTRATIVO · ~6 m de alto, 1.3 × 1.3 m")]
 
 
+def _draga():  # ILUSTRATIVA: canal 4 m x 2 m (dato); ancho 1.0 m y rampa de 3.0 m a 45 grados (supuestos)
+    W, Hi, Lc = 1.0, 3.0, 4.0
+    rampa = [((0, 0, 0), (-Hi, 0, Hi)), ((0, W, 0), (-Hi, W, Hi)), ((-Hi, 0, Hi), (-Hi, W, Hi))]
+    palas = [((0.3 + 0.6 * k, 0, 0), (0.3 + 0.6 * k, 0, 0.3)) for k in range(7)]
+    return [_tr(_caja(0, 0, 0, Lc, W, 2.0)), _tr(rampa), _tr(palas, PANEL, 3),
+            _txt(Lc / 2, -0.4, 0, "4 m"), _txt(-Hi, W / 2, Hi + 0.4, "ILUSTRATIVO · ancho y rampa por confirmar")]
+
+
 PLANOS = {"homogenizacion": _homogenizacion, "coagulacion": _coagulacion, "sedimentador": _sedimentador,
-          "oxidacion": _oxidacion, "filtros": _filtros, "torre_enfriamiento": _torre}
+          "oxidacion": _oxidacion, "filtros": _filtros, "torre_enfriamiento": _torre, "draga_rejillas": _draga}
 LEYENDA = "Azul: estructura · Verde: nivel de agua · Naranja: paneles / agitador · Lila: tuberías perforadas. Arrastra para girar."
 
 

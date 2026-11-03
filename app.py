@@ -60,10 +60,10 @@ EQUIPOS = {
     },
     "homogenizacion": {
         "nombre": "Tanque de homogenización y neutralización", "tipo": "diseno", "V": 40.0, "V_total": 45.0,
-        "nota": "PROVISIONAL: 45 m³ totales; útil estimado con 0.4 m de franco libre. Altura real por medir. Tanque enterrado: la boca queda al nivel del piso.",
-        "industria": "Industrial / Ecualización de carga",
-        "uso_general": "Recibe el agua de la torre y amortigua las variaciones de caudal, pH y carga de los baños de tinte. "
-                       "Aquí se ajusta el pH aplicando cal hidratada de forma manual (no hay sistema de dosificación ni respaldo).",
+        "nota": "45 m³ totales; útil estimado con 0.4 m de volumen libre. Tanque enterrado: la boca queda al nivel del piso.",
+        "industria": "Industrial / Tratamiento de agua",
+        "uso_general": "Recibe el agua de la torre y amortigua las variaciones de caudal, pH y carga de los procesos de Tintorería. "
+                       "Aquí se ajusta el pH aplicando cal hidratada de forma manual (no hay un sistema de dosificación ni de respaldo automático).",
         "cuando_si": "Cuando hay picos de carga hidráulica o química que desestabilizarían el tratamiento fisicoquímico posterior.",
         "cuando_no": "Cuando el caudal y la calidad del agua ya son constantes, o el tanque está en limpieza por sedimentos acumulados.",
         "dato_curioso": "La bomba de 3 HP tiene una línea de recirculación al mismo tanque: sirve para regular el caudal "

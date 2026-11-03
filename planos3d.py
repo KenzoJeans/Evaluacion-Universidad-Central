@@ -108,11 +108,12 @@ def _filtros():
     return t + [_txt(x, 0, h + 0.2, n) for x, h, n in fs]
 
 
-def _torre():  # ILUSTRATIVA: medidas provisionales hasta medir la torre real
-    ventilador = _circ(0.8, 0.6, 4.55, 0.4) + [((0.4, 0.6, 4.55), (1.2, 0.6, 4.55)), ((0.8, 0.2, 4.55), (0.8, 1.0, 4.55))]
-    return [_tr(_caja(0, 0, 0, 1.6, 1.2, 1.3)), _tr(_caja(0.3, 0.2, 1.3, 1.0, 0.8, 3.0)),
-            _tr(_caja(0.3, -0.02, 0.4, 1.0, 0.02, 0.5), PANEL, 3), _tr(_cilindro(0.8, 0.6, 4.3, 0.4, 0.25)),
-            _tr(ventilador, PANEL, 3), _txt(0.8, 0.6, 5.0, "ILUSTRATIVO · medidas por confirmar")]
+def _torre():  # ILUSTRATIVA: ~6 m de alto, 1.3 x 1.3 m (estimadas)
+    a, hb = 1.3, 5.35
+    return [_tr(_caja(0, 0, 0, a, a, hb)), _tr(_caja(0.15, -0.02, 0.4, 1.0, 0.02, 0.6), PANEL, 3),
+            _tr([((0, 0, hb), (a / 2, a / 2, hb + a / 2)), ((a, 0, hb), (a / 2, a / 2, hb + a / 2)),
+                 ((a, a, hb), (a / 2, a / 2, hb + a / 2)), ((0, a, hb), (a / 2, a / 2, hb + a / 2))], CIAN, 3),
+            _txt(a / 2, a / 2, 6.6, "ILUSTRATIVO · ~6 m de alto, 1.3 × 1.3 m")]
 
 
 PLANOS = {"homogenizacion": _homogenizacion, "coagulacion": _coagulacion, "sedimentador": _sedimentador,

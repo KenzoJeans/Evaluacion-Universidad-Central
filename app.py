@@ -30,8 +30,8 @@ st.markdown(
 # ---------------------------------------------------------------------------
 EQUIPOS = {
     "draga_rejillas": {
-        "nombre": "Draga y rejillas de retención de sólidos gruesos y finos", "tipo": "preliminar",
-        "industria": "Industrial / Tratamiento preliminar textil",
+        "nombre": "Draga y rejillas", "tipo": "preliminar",
+        "industria": "Textil / Marítima / Tratamiento de agua / Construcción / Minera",
         "uso_general": "Primera fase: retira los sólidos gruesos del agua de tintorería con una draga y cuatro rejillas "
                        "en paralelo de diferentes diámetros que retienen sólidos cada vez menores.",
         "cuando_si": "Siempre en la cabecera de la planta, para proteger bombas y equipos posteriores de obstrucciones.",

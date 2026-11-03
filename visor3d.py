@@ -21,6 +21,10 @@ def tc(p, rt, rb, h, n=32, c=AZUL, o=0.96, e=1):  # tronco: p = centro (x, y) y 
     return {"k": "tc", "p": p, "rt": rt, "rb": rb, "h": h, "n": n, "c": c, "o": o, "e": e}
 
 
+def quad(pts, c=GRIS, o=0.5):
+    return {"k": "quad", "pts": pts, "c": c, "o": o}
+
+
 def flujo(pts, c=FLUJO):
     return {"k": "flow", "pts": pts, "c": c}
 
@@ -100,8 +104,32 @@ def _torre():  # ~6 m de alto, 1.3 x 1.3 m (estimadas); el interior es ilustrati
     return it
 
 
+def _draga():  # ILUSTRATIVA: canal 4 m x 2 m (dato), ancho 1.0 m y rampa de 3.0 m a 45 grados (supuestos)
+    W, Hi, Lc, Ph = 1.0, 3.0, 4.0, 0.3
+    r2 = math.sqrt(2)
+    it = [caja([0, -0.15, 0], [Lc, 0.15, 2.0], GRIS, 0.35), caja([0, W, 0], [Lc, 0.15, 2.0], GRIS, 0.35),
+          caja([Lc - 0.15, 0, 0], [0.15, W, 2.0], GRIS, 0.35), caja([0, 0, -0.1], [Lc, W, 0.1], GRIS),
+          caja([0.0, 0.02, 0.01], [Lc - 0.15, W - 0.04, 1.69], AGUA, 0.18),
+          quad([[0, 0, 0], [0, W, 0], [-Hi, W, Hi], [-Hi, 0, Hi]], ACERO, 0.55),
+          quad([[0, 0, 0], [-Hi, 0, Hi], [-Hi, 0, Hi + 0.5], [0, 0, 0.5]], GRIS, 0.35),
+          quad([[0, W, 0], [-Hi, W, Hi], [-Hi, W, Hi + 0.5], [0, W, 0.5]], GRIS, 0.35),
+          tc([-Hi - 0.45, W / 2, Hi - 0.2], 0.707, 0.177, 0.8, 4, LODO, 0.9),
+          caja([-Hi - 0.1, W / 2 - 0.2, Hi + 0.1], [0.4, 0.4, 0.35], GRIS)]
+    for k in range(7):  # palas cada 0.6 m sobre el fondo
+        x = 0.3 + 0.6 * k
+        it.append(quad([[x, 0.03, 0], [x, W - 0.03, 0], [x, W - 0.03, Ph], [x, 0.03, Ph]], "#58a6ff", 0.9))
+    for s_ in (0.5, 1.1, 1.7, 2.3, 2.9, 3.5):  # palas sobre la rampa, cada 0.6 m
+        px, pz = -s_ / r2, s_ / r2
+        it.append(quad([[px, 0.03, pz], [px, W - 0.03, pz], [px + Ph / r2, W - 0.03, pz + Ph / r2], [px + Ph / r2, 0.03, pz + Ph / r2]], "#58a6ff", 0.9))
+    sl = Hi * r2
+    it += [flujo([[(-0.5 + 0.45) / r2 * 1.0, W / 2, (0.5 + 0.45) / r2], [(-(sl - 0.4) + 0.45) / r2, W / 2, ((sl - 0.4) + 0.45) / r2]], LODO),
+           flujo([[-Hi - 0.45, W / 2, Hi - 0.1], [-Hi - 0.45, W / 2, Hi - 0.9]], LODO),
+           flujo([[3.5, W / 2, 1.75], [0.7, W / 2, 1.75]]), flujo([[0.4, W / 2, 0.45], [3.6, W / 2, 0.45]], AIRE)]
+    return it
+
+
 ESCENAS = {"sedimentador": _sedimentador, "coagulacion": _coagulacion, "homogenizacion": _homogenizacion,
-           "oxidacion": _oxidacion, "filtros": _filtros, "torre_enfriamiento": _torre}
+           "oxidacion": _oxidacion, "filtros": _filtros, "torre_enfriamiento": _torre, "draga_rejillas": _draga}
 
 HTML = """
 <div id="c" style="width:100%;height:480px;position:relative;background:#0e1117;border-radius:8px;overflow:hidden">
@@ -150,6 +178,11 @@ HTML = """
       const im = new THREE.InstancedMesh(hg, mat(c, 1), pos.length), d = new THREE.Object3D();
       pos.forEach(function (p, k) { d.position.copy(T(p[0], p[1], it.p[2] + it.s[2] / 2)); d.updateMatrix(); im.setMatrixAt(k, d.matrix); });
       grp.add(im);
+    } else if (it.k === 'quad') {
+      const q = it.pts, g = new THREE.BufferGeometry(), v = [];
+      [0, 1, 2, 0, 2, 3].forEach(function (i) { const p = T(q[i][0], q[i][1], q[i][2]); v.push(p.x, p.y, p.z); });
+      g.setAttribute('position', new THREE.Float32BufferAttribute(v, 3)); g.computeVertexNormals();
+      grp.add(new THREE.Mesh(g, mat(c, o)));
     } else if (it.k === 'flow') {
       const pts = it.pts.map(function (p) { return T(p[0], p[1], p[2]); }), path = new THREE.CurvePath();
       for (let i = 0; i < pts.length - 1; i++) path.add(new THREE.LineCurve3(pts[i], pts[i + 1]));

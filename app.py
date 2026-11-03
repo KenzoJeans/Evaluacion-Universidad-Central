@@ -287,7 +287,7 @@ def pagina_evaluacion():
         st.subheader("📝 Cuestionario de la PTAR")
 
         # Pregunta 1
-        st.markdown("**1. ¿Cuál es la función principal de la torre de enfriamiento en la cabecera del tren de tratamiento textil?**")
+        st.markdown("**1. ¿Cuál es la función principal de la torre de enfriamiento al principio del tren de tratamiento?**")
         p1 = st.radio("Opciones_p1", [
             "A) Retirar los sólidos suspendidos de gran tamaño mediante rejillas.",
             "B) Disipar calor y bajar la temperatura del efluente de tintorería por debajo de 30 °C.",
@@ -321,7 +321,7 @@ def pagina_evaluacion():
         # Pregunta 5
         st.markdown("**5. ¿Qué función cumple específicamente el filtro de carbón activado en las etapas finales del tren?**")
         p5 = st.radio("Opciones_p5", [
-            "A) Retener únicamente arena gruesa del río.",
+            "A) Retener únicamente arena gruesa.",
             "B) Adsorber color remanente, tensoactivos y olores del efluente.",
             "C) Aumentar la temperatura del agua antes del vertimiento."
         ], index=0, label_visibility="collapsed")
@@ -329,16 +329,16 @@ def pagina_evaluacion():
         # Pregunta 6
         st.markdown("**6. ¿Qué proceso químico se lleva a cabo en el tanque de oxidación empleando peróxido de hidrógeno?**")
         p6 = st.radio("Opciones_p6", [
-            "A) Reducción de la carga orgánica disuelta (DQO) y color que persiste tras el fisicoquímico.",
+            "A) Reducción de la carga orgánica e inorgánica disuelta (DQO) y color que persiste tras el fisicoquímico.",
             "B) Coagulación primaria de sólidos gruesos.",
             "C) Desinfección microbiológica con cloro residual libre."
         ], index=0, label_visibility="collapsed")
 
         # Pregunta 7
-        st.markdown("**7. ¿Cuál es el principal factor o problema operativo que amenaza la vida útil de las membranas de micro/ultrafiltración (fouling)?**")
+        st.markdown("**7. ¿Cuál es el principal factor o problema operativo que amenaza la vida útil de las membranas de micro/ultrafiltración?**")
         p7 = st.radio("Opciones_p7", [
             "A) El exceso de colorantes azulados en el agua.",
-            "B) El ensuciamiento por sólidos finos, coloides o agentes incompatibles que no fueron removidos antes.",
+            "B) El taponamiento por sólidos finos, coloides o agentes incompatibles que no fueron removidos antes.",
             "C) El exceso de presión por debajo de 10 psi."
         ], index=0, label_visibility="collapsed")
 

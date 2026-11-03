@@ -30,7 +30,7 @@ st.markdown(
 # ---------------------------------------------------------------------------
 EQUIPOS = {
     "draga_rejillas": {
-        "nombre": "Draga y rejillas de desbaste", "tipo": "preliminar",
+        "nombre": "Draga y rejillas de retención de sólidos gruesos y finos", "tipo": "preliminar",
         "industria": "Industrial / Tratamiento preliminar textil",
         "uso_general": "Primera fase: retira los sólidos gruesos del agua de tintorería con una draga y cuatro rejillas "
                        "en paralelo de diferentes diámetros que retienen sólidos cada vez menores.",

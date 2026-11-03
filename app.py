@@ -53,7 +53,8 @@ EQUIPOS = {
                         "retiran sólidos que pasaron la draga.",
         "specs": ["**Rendimiento:** vertimiento por debajo de 30 °C.", "**Relleno:** 12 paneles de polipropileno de alta densidad.",
                   "**Aire:** ventilador en la parte superior, que jala el aire hacia arriba (tiro inducido).",
-                  "**Bombeo:** motobomba con accionamiento por flotador."],
+                  "**Bombeo:** motobomba con accionamiento por flotador.",
+                  "**Dimensiones (estimadas):** unos 6 m de alto y 1.3 × 1.3 m en planta."],
     },
     "homogenizacion": {
         "nombre": "Tanque de homogenización y neutralización", "tipo": "diseno", "V": 40.0, "V_total": 45.0,

@@ -39,7 +39,9 @@ EQUIPOS = {
                      "pierde su función y puede desbordarse.",
         "dato_curioso": "Las rejillas de distinto diámetro actúan como un filtro progresivo: cada una retiene un tamaño de sólido diferente.",
         "specs": ["**Componentes:** draga y 4 rejillas en paralelo.", "**Función:** retención de sólidos gruesos y menores.",
-                  "**Mantenimiento:** retiro periódico de los residuos retenidos."],
+                  "**Mantenimiento:** retiro periódico de los residuos retenidos.",
+                  "**Palas:** separadas unos 60 cm; elevan los sólidos por una rampa hasta una tolva de lodos.",
+                  "**Dimensiones (estimadas):** canal de unos 4 m de largo y 2 m de profundidad."],
     },
     "torre_enfriamiento": {
         "nombre": "Torre de enfriamiento", "tipo": "preliminar",

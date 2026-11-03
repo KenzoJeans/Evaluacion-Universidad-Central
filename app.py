@@ -110,7 +110,7 @@ EQUIPOS = {
         "industria": "Industrial y municipal / Mejora del efluente",
         "uso_general": "Los filtros de arena retienen los flóculos que escapan del sedimentador; el de carbón activado "
                        "adsorbe color, tensoactivos y olor. Se limpian con retrolavado.",
-        "cuando_si": "Para "pulir" el agua clarificada antes de la descarga, cuando aún arrastra sólidos finos o color.",
+        "cuando_si": "Para 'pulir' el agua clarificada antes de la descarga, cuando aún arrastra sólidos finos o color.",
         "cuando_no": "Cuando el agua llega con muchos sólidos (se colmata rápido): deben retirarse antes, en el sedimentador.",
         "dato_curioso": "Durante la filtración las válvulas de ½\" de la parte superior deben estar cerradas, y la válvula de alivio "
                         "limita la presión interna a 60 psi.",

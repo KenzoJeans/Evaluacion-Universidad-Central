@@ -1,12 +1,14 @@
 import io
 import math
+import requests  # <- Librería para enviar los datos al Webhook
 
 import qrcode
 import streamlit as st
 
 from planos3d import mostrar_plano
 
-APP_URL = "https://TU-APP.streamlit.app"  # <- poner la URL real de la app
+APP_URL = "https://evaluacion-universidad-central-k7pajrjvmfi3wcverutpfp.streamlit.app/"  # <- poner la URL real de la app
+WEBHOOK_SHEET_URL = "https://script.google.com/macros/s/AKfycbxI8178gRI44TBgtZfS4leESFAxgoa4vrVYSC1wy8h4FkdujtewyHrcoq69GaWvJaOnkA/exec"  # <- Poner tu URL de Apps Script
 
 st.set_page_config(page_title="Fichas técnicas PTAR - Kenzo Jeans", page_icon="💧", layout="wide",
                    initial_sidebar_state="expanded")
@@ -65,7 +67,7 @@ EQUIPOS = {
         "uso_general": "Recibe el agua de la torre y amortigua las variaciones de caudal, pH y carga de los procesos de Tintorería. "
                        "Aquí se ajusta el pH aplicando cal hidratada de forma manual (no hay un sistema de dosificación ni de respaldo automático).",
         "cuando_si": "Cuando hay picos de carga hidráulica o química que desestabilizarían el tratamiento fisicoquímico posterior.",
-        "cuando_no": "Когда el caudal y la calidad del agua ya son constantes, o el tanque está en limpieza por sedimentos acumulados.",
+        "cuando_no": "Cuando el caudal y la calidad del agua ya son constantes, o el tanque está en limpieza por sedimentos acumulados.",
         "dato_curioso": "La bomba de 3 HP tiene una línea de recirculación al mismo tanque: sirve para regular el caudal "
                         "enviado a coagulación y para mezclar la cal.",
     },
@@ -98,8 +100,8 @@ EQUIPOS = {
         "industria": "Industrial / Tratamiento avanzado",
         "uso_general": "Oxidación química con peróxido de hidrógeno, dosificado con bomba de diafragma en la línea de "
                        "recirculación (bomba B1, que también mezcla el peróxido), para reducir DQO y color remanentes.",
-        "cuando_si": "Когда después del tratamiento fisicoquímico quedan color y materia orgánica oxidable que superan los límites.",
-        "cuando_no": "Когда la carga orgánica y el color ya cumplen la norma tras sedimentar.",
+        "cuando_si": "Cuando después del tratamiento fisicoquímico quedan color y materia orgánica oxidable que superan los límites.",
+        "cuando_no": "Cuando la carga orgánica y el color ya cumplen la norma tras sedimentar.",
         "dato_curioso": "No es la última barrera: después vienen los filtros de arena, el de carbón y la salida. "
                         "Pregunta para pensar: ¿qué pasa con el peróxido residual cuando llega al carbón activado?",
     },
@@ -110,8 +112,8 @@ EQUIPOS = {
         "industria": "Industrial y municipal / Mejora del efluente",
         "uso_general": "Los filtros de arena retienen los flóculos que escapan del sedimentador; el de carbón activado "
                        "adsorbe color, tensoactivos y olor. Se limpian con retrolavado.",
-        "cuando_si": "Для 'pulir' el agua clarificada antes de la descarga, cuando aún arrastra sólidos finos o color.",
-        "cuando_no": "Когда el agua llega con muchos sólidos (se colmata rápido): deben retirarse antes, en el sedimentador.",
+        "cuando_si": "Para 'pulir' el agua clarificada antes de la descarga, cuando aún arrastra sólidos finos o color.",
+        "cuando_no": "Cuando el agua llega con muchos sólidos (se colmata rápido): deben retirarse antes, en el sedimentador.",
         "dato_curioso": "Durante la filtración las válvulas de ½\" de la parte superior deben estar cerradas, y la válvula de alivio "
                         "limita la presión interna a 60 psi.",
     },
@@ -123,9 +125,9 @@ EQUIPOS["mf_uf"] = {
     "industria": "Industrial y municipal / Química",
     "uso_general": "Membranas que retienen por tamaño las partículas finas y coloides que pasaron los filtros. "
                    "La microfiltración trabaja con poros de ~0.1-10 µm y la ultrafiltración de ~0.01-0.1 µm. "
-                   "После de ellas el agua se almacena en el tanque de agua tratada.",
-    "cuando_si": "Когда se necesita un efluente muy clarificado, con pocos sólidos finos y coloides.",
-    "cuando_no": "Когда el agua llega con muchos sólidos o con oxidantes o temperaturas que la membrana no tolera: "
+                   "Después de ellas el agua se almacena en el tanque de agua tratada.",
+    "cuando_si": "Cuando se necesita un efluente muy clarificado, con pocos sólidos finos y coloides.",
+    "cuando_no": "Cuando el agua llega con muchos sólidos o con oxidantes o temperaturas que la membrana no tolera: "
                  "se ensucia rápido o se daña.",
     "dato_curioso": "Su gran enemigo es el ensuciamiento (fouling): por eso se limpia con retrolavados y por eso todo el tren "
                     "anterior existe, para entregarle un agua lo más limpia posible.",
@@ -224,7 +226,7 @@ def calc_mf():
     st.subheader("🧮 Flujo por membrana:  J = Q / A")
     area = st.number_input("Área de membrana (m²) — valor de ejemplo, pendiente de medir", 0.5, 500.0, 10.0, 0.5)
     st.metric("Flujo (J)", f"{q_lmin * 60 / area:.1f} L/m²·h")
-    st.caption("Если el flujo es mayor al de diseño del fabricante, la membrana se ensucia más rápido.")
+    st.caption("Si el flujo es mayor al de diseño del fabricante, la membrana se ensucia más rápido.")
 
 
 CALCULOS = {"mf_uf": calc_mf, "homogenizacion": calc_homogenizacion, "coagulacion": calc_coagulacion,
@@ -271,7 +273,7 @@ def pagina_evaluacion():
         """
         **Universidad Central — Sistemas de Tratamiento Avanzado**  
         Por favor ingresa tus datos personales y responde las 7 preguntas basadas en el recorrido por la planta. 
-        Al finalizar, haz clic en el botón para enviar y conocer tu calificación.
+        Al finalizar, haz clic en el botón para enviar, guardar en registro y conocer tu calificación.
         """
     )
     st.markdown("---")
@@ -287,7 +289,7 @@ def pagina_evaluacion():
         st.subheader("📝 Cuestionario de la PTAR")
 
         # Pregunta 1
-        st.markdown("**1. ¿Cuál es la función principal de la torre de enfriamiento al principio del tren de tratamiento?**")
+        st.markdown("**1. ¿Cuál es la función principal de la torre de enfriamiento en la cabecera del tren de tratamiento textil?**")
         p1 = st.radio("Opciones_p1", [
             "A) Retirar los sólidos suspendidos de gran tamaño mediante rejillas.",
             "B) Disipar calor y bajar la temperatura del efluente de tintorería por debajo de 30 °C.",
@@ -304,7 +306,7 @@ def pagina_evaluacion():
 
         # Pregunta 3
         st.markdown("**3. En el tanque de homogenización y neutralización, ¿cómo se realiza normalmente el ajuste de pH en esta planta?**")
-        p2_opt = st.radio("Opciones_p3", [
+        p3 = st.radio("Opciones_p3", [
             "A) Dosificación automática computarizada con válvulas PID.",
             "B) Aplicación manual de cal hidratada según el valor medido.",
             "C) Adición continua de ácido sulfúrico."
@@ -321,7 +323,7 @@ def pagina_evaluacion():
         # Pregunta 5
         st.markdown("**5. ¿Qué función cumple específicamente el filtro de carbón activado en las etapas finales del tren?**")
         p5 = st.radio("Opciones_p5", [
-            "A) Retener únicamente arena gruesa.",
+            "A) Retener únicamente arena gruesa del río.",
             "B) Adsorber color remanente, tensoactivos y olores del efluente.",
             "C) Aumentar la temperatura del agua antes del vertimiento."
         ], index=0, label_visibility="collapsed")
@@ -329,21 +331,21 @@ def pagina_evaluacion():
         # Pregunta 6
         st.markdown("**6. ¿Qué proceso químico se lleva a cabo en el tanque de oxidación empleando peróxido de hidrógeno?**")
         p6 = st.radio("Opciones_p6", [
-            "A) Reducción de la carga orgánica e inorgánica disuelta (DQO) y color que persiste tras el fisicoquímico.",
+            "A) Reducción de la carga orgánica disuelta (DQO) y color que persiste tras el fisicoquímico.",
             "B) Coagulación primaria de sólidos gruesos.",
             "C) Desinfección microbiológica con cloro residual libre."
         ], index=0, label_visibility="collapsed")
 
         # Pregunta 7
-        st.markdown("**7. ¿Cuál es el principal factor o problema operativo que amenaza la vida útil de las membranas de micro/ultrafiltración?**")
+        st.markdown("**7. ¿Cuál es el principal factor o problema operativo que amenaza la vida útil de las membranas de micro/ultrafiltración (fouling)?**")
         p7 = st.radio("Opciones_p7", [
             "A) El exceso de colorantes azulados en el agua.",
-            "B) El taponamiento por sólidos finos, coloides o agentes incompatibles que no fueron removidos antes.",
+            "B) El ensuciamiento por sólidos finos, coloides o agentes incompatibles que no fueron removidos antes.",
             "C) El exceso de presión por debajo de 10 psi."
         ], index=0, label_visibility="collapsed")
 
         st.markdown("---")
-        enviar_quiz = st.form_submit_button("📤 Enviar Evaluación")
+        enviar_quiz = st.form_submit_button("📤 Enviar y Guardar Evaluación")
 
         if enviar_quiz:
             if not nombre.strip() or not cedula.strip() or not correo.strip():
@@ -353,17 +355,41 @@ def pagina_evaluacion():
                 puntaje = 0
                 if p1.startswith("B)"): puntaje += 1
                 if p2.startswith("B)"): puntaje += 1
-                if p2_opt.startswith("B)"): puntaje += 1
+                if p3.startswith("B)"): puntaje += 1
                 if p4.startswith("A)"): puntaje += 1
                 if p5.startswith("B)"): puntaje += 1
                 if p6.startswith("A)"): puntaje += 1
                 if p7.startswith("B)"): puntaje += 1
 
-                st.success(f"🎉 ¡Evaluación enviada con éxito, **{nombre}**!")
-                st.metric("Calificación Obtendia", f"{puntaje} / 7 aciertos")
+                # Preparar JSON para Google Sheets
+                payload = {
+                    "nombre": nombre,
+                    "cedula": cedula,
+                    "correo": correo,
+                    "puntaje": f"{puntaje}/7",
+                    "p1": p1,
+                    "p2": p2,
+                    "p3": p3,
+                    "p4": p4,
+                    "p5": p5,
+                    "p6": p6,
+                    "p7": p7
+                }
+
+                # Enviar al Webhook de Google Apps Script
+                try:
+                    res = requests.post(WEBHOOK_SHEET_URL, json=payload, timeout=8)
+                    if res.status_code == 200:
+                        st.success(f"🎉 ¡Evaluación registrada exitosamente en Google Sheets, **{nombre}**!")
+                    else:
+                        st.warning(f"⚠️ Evaluación completada, pero hubo un contratiempo al conectar con Sheets (Código {res.status_code}).")
+                except Exception as err:
+                    st.warning(f"⚠️ Evaluación completada, pero no se logró conectar con Google Sheets: {err}")
+
+                st.metric("Calificación Obtenida", f"{puntaje} / 7 aciertos")
                 
                 if puntaje >= 6:
-                    st.info("🌟 ¡ Excelente dominio de los procesos de tratamiento de la PTAR!")
+                    st.info("🌟 ¡Excelente dominio de los procesos de tratamiento de la PTAR!")
                 elif puntaje >= 4:
                     st.info("👍 Buen desempeño, repasa algunos detalles del tren fisicoquímico y de filtración.")
                 else:

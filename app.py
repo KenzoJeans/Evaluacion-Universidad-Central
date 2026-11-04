@@ -1,6 +1,6 @@
 import io
 import math
-from evaluacion import pagina_evaluacion  # <- Librería para enviar los datos al Webhook
+import requests  # <- Librería para enviar los datos al Webhook
 
 import qrcode
 import streamlit as st

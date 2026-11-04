@@ -401,8 +401,16 @@ def pagina_evaluacion():
 
 
 def pagina_qr():
-    st.header("📱 Códigos QR por etapa y equipo")
+    st.header("📱 Códigos QR")
     base = st.text_input("URL base de la app", APP_URL).rstrip("/")
+    st.subheader("🚪 QR de ingreso (lleva a la portada)")
+    buf = io.BytesIO()
+    qrcode.make(base).save(buf, format="PNG")
+    c1, c2 = st.columns([1, 2])
+    c1.image(buf.getvalue(), width=150)
+    c2.write("**Ingreso al recorrido**: para proyectar o imprimir en la entrada de la planta.")
+    c2.download_button("Descargar PNG", buf.getvalue(), "qr_ingreso.png", "image/png", key="dl_ingreso")
+    st.subheader("📍 QR por equipo (van directo a la ficha)")
     for clave, e in EQUIPOS.items():
         buf = io.BytesIO()
         qrcode.make(f"{base}/?equipo={clave}").save(buf, format="PNG")

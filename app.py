@@ -437,7 +437,7 @@ if pagina == "inicio":
     st.info("👉 **Instrucciones:** elige un equipo en el menú lateral para explorar sus fichas técnicas, planos 3D y calculadoras, "
             "o dirígete a la sección de evaluación académica si realizaste el recorrido.")
 elif pagina == "evaluacion":
-    pagina_evaluacion("https://script.google.com/macros/s/AKfycbxI8178gRI44TBgtZfS4leESFAxgoa4vrVYSC1wy8h4FkdujtewyHrcoq69GaWvJaOnkA/exec")
+    pagina_evaluacion(WEBHOOK_SHEET_URL)
 elif pagina == "qr":
     pagina_qr()
 else:

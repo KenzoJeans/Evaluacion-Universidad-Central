@@ -102,9 +102,9 @@ def portada_activa():
         '<div class="kicker">BIENVENIDOS</div>'
         '<h1>Universidad Central</h1>'
         '<h2>al recorrido por la Planta de Tratamiento de Aguas Residuales de <b>Kenzo Jeans</b></h2>'
-        '<div class="msg">Hoy conocerán cómo el agua de nuestra tintorería recibe tratamiento antes de su descarga. '
-        'Presten atención, observen cada equipo y hagan todas las preguntas que necesiten: cada duda es parte del aprendizaje. '
-        'Y no dejen de trabajar por el medio ambiente: el agua que cuidamos hoy es el futuro de todos.</div>'
+        '<div class="msg">Hoy conocerán cómo el agua de nuestra tintorería recibe tratamiento antes de su descarga al alcantarillado. '
+        'Por favor presten atención durante todo el recorrido, observen cada equipo y hagan todas las preguntas que necesiten: cada duda es parte del aprendizaje. '
+        'Les agradecemos su presencia el día de hoy, y su compromiso de trabajar por el medio ambiente: el agua que cuidamos hoy es el futuro de todos.</div>'
         '</div>'
         f'<div class="waves">{OLA % "#1f6feb"}{OLA % "#00b4d8"}</div>'
     )

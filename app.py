@@ -9,8 +9,7 @@ from planos3d import mostrar_plano
 
 APP_URL = "https://evaluacion-universidad-central-k7pajrjvmfi3wcverutpfp.streamlit.app/"  # <- poner la URL real de la app
 WEBHOOK_SHEET_URL = "https://script.google.com/macros/s/AKfycbxI8178gRI44TBgtZfS4leESFAxgoa4vrVYSC1wy8h4FkdujtewyHrcoq69GaWvJaOnkA/exec"  # <- Poner tu URL de Apps Script
-
-st.set_page_config(page_title="Fichas técnicas PTAR - Kenzo Jeans", page_icon="💧", layout="wide",
+st.set_page_config(page_title="Planta de Tratamiento de Agua Residual - Kenzo Jeans", page_icon="💧", layout="wide",
                    initial_sidebar_state="expanded")
 
 st.markdown(

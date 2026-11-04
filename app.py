@@ -423,7 +423,7 @@ def pagina_qr():
 # ENRUTADOR
 # ---------------------------------------------------------------------------
 if pagina == "inicio":
-    st.title("💧 Fichas técnicas de la PTAR - Kenzo Jeans")
+    st.title("💧 Planta de Tratamiento de Agua Residual - Kenzo Jeans")
     st.markdown(
         """
         ### 🌿 Compromiso ambiental

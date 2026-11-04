@@ -4,7 +4,7 @@ import os
 import streamlit as st
 
 LOGO_UNIVERSIDAD = "logo_universidad.png"  # subir este archivo a la raíz del repositorio
-LOGO_KENZO = "logo.png"
+LOGO_KENZO = "logonegro.png"
 
 CSS = """
 .stApp { background: radial-gradient(circle at 20% 10%, #12304f 0%, #0e1117 55%), #0e1117; }

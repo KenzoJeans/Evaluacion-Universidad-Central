@@ -27,6 +27,10 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+from portada import portada_activa
+if portada_activa():
+    st.stop()
+
 # ---------------------------------------------------------------------------
 # DATOS (medidas en m, volúmenes en m³). Editar aquí al verificar datos.
 # ---------------------------------------------------------------------------

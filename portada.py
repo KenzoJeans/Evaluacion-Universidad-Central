@@ -6,7 +6,7 @@ import time
 import streamlit as st
 
 LOGO_UNIVERSIDAD = "logo_universidad.png"  # subir este archivo a la raíz del repositorio
-LOGO_KENZO = "logo.png"
+LOGO_KENZO = "logonegro.png"
 DURACION_TRANSICION = 1.3  # segundos
 
 CSS = """

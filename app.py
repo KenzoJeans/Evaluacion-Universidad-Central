@@ -1,15 +1,15 @@
 import io
 import math
-import requests
-from evaluacion import pagina_evaluacion# <- Librería para enviar los datos al Webhook
 
 import qrcode
 import streamlit as st
 
+from evaluacion import pagina_evaluacion
 from planos3d import mostrar_plano
 
-APP_URL = "https://evaluacion-universidad-central-k7pajrjvmfi3wcverutpfp.streamlit.app/"  # <- poner la URL real de la app
-WEBHOOK_SHEET_URL = "https://script.google.com/macros/s/AKfycbxI8178gRI44TBgtZfS4leESFAxgoa4vrVYSC1wy8h4FkdujtewyHrcoq69GaWvJaOnkA/exec"  # <- Poner tu URL de Apps Script
+APP_URL = "https://evaluacion-universidad-central-k7pajrjvmfi3wcverutpfp.streamlit.app/"  # <- URL real de la app
+WEBHOOK_SHEET_URL = "https://script.google.com/macros/s/AKfycbxI8178gRI44TBgtZfS4leESFAxgoa4vrVYSC1wy8h4FkdujtewyHrcoq69GaWvJaOnkA/exec"  # <- URL de Apps Script
+
 st.set_page_config(page_title="Planta de Tratamiento de Agua Residual - Kenzo Jeans", page_icon="💧", layout="wide",
                    initial_sidebar_state="expanded")
 
@@ -84,6 +84,9 @@ EQUIPOS = {
                        "La floculación ocurre después, en la tubería en U y en el primer compartimiento del sedimentador.",
         "cuando_si": "Para remover color y sólidos coloidales que no sedimentan solos.",
         "cuando_no": "Cuando el pH está fuera del rango en que el coagulante actúa bien, o no hay coloides que desestabilizar.",
+        "specs": ["**Coagulante:** PAC (policloruro de aluminio), prehidrolizado: trabaja en un rango de pH más amplio y consume "
+                  "menos alcalinidad que el alumbre (sulfato de aluminio).",
+                  "**Floculante:** poliacrilamida aniónica de alto peso molecular, que forma puentes entre los microflóculos."],
         "dato_curioso": "La dosis óptima no se calcula: se determina con ensayo de jarras (100 rpm por 30 s, 33 rpm por 15 min, "
                         "15 min de sedimentación).",
     },
@@ -148,20 +151,19 @@ with st.sidebar:
         st.image("logo.png", width="stretch")
     except Exception:
         st.info("💡 Coloca 'logo.png' en la raíz del proyecto para verlo aquí.")
-    st.markdown("---")
-    q_lmin = st.number_input("💧 Caudal de trabajo (L/min)", 1.0, 5000.0, 100.0, 5.0)
-    st.warning("Caudal de referencia pendiente de verificar. Cámbialo para explorar escenarios.")
 
+# El caudal se ajusta dentro de cada ficha (ver caudal_ajustable); aquí solo se lee.
+q_lmin = st.session_state.get("q_lmin", 100.0)
 q_m3h = q_lmin * 60 / 1000
 q_m3d = q_lmin * 1.44
 
 admin = st.query_params.get("admin") == "1"
 paginas = ["inicio"] + list(EQUIPOS) + ["evaluacion"] + (["qr"] if admin else [])
 etiquetas = {
-    "inicio": "🏠 Inicio", 
-    "evaluacion": "🎓 Evaluación Recorrido PTAR", 
-    "qr": "📱 Generar códigos QR", 
-    **{k: v["nombre"] for k, v in EQUIPOS.items()}
+    "inicio": "🏠 Inicio",
+    "evaluacion": "🎓 Evaluación Recorrido PTAR",
+    "qr": "📱 Generar códigos QR",
+    **{k: f"{i}. {v['nombre']}" for i, (k, v) in enumerate(EQUIPOS.items(), 1)},
 }
 inicial = st.query_params.get("equipo", "inicio")
 if inicial not in paginas:
@@ -240,6 +242,12 @@ CALCULOS = {"mf_uf": calc_mf, "homogenizacion": calc_homogenizacion, "coagulacio
 # ---------------------------------------------------------------------------
 # FICHA
 # ---------------------------------------------------------------------------
+def caudal_ajustable():
+    with st.expander("⚙️ Caudal de referencia (L/min)"):
+        st.number_input("Caudal de trabajo (L/min)", 1.0, 5000.0, 100.0, 5.0, key="q_lmin")
+        st.caption("Valor de referencia, pendiente de verificar. Cámbialo para explorar escenarios.")
+
+
 def ficha(clave):
     e = EQUIPOS[clave]
     st.header(e["nombre"])
@@ -258,8 +266,10 @@ def ficha(clave):
 
     mostrar_plano(clave)
 
-    if e["tipo"] == "diseno":
+    if e["tipo"] in ("diseno", "filtros", "membranas"):
         st.markdown("---")
+        caudal_ajustable()
+    if e["tipo"] == "diseno":
         st.subheader("📊 Parámetros de diseño")
         c1, c2 = st.columns(2)
         c1.metric("Volumen útil", f"{e['V']} m³")
@@ -269,135 +279,6 @@ def ficha(clave):
     if clave in CALCULOS:
         st.markdown("---")
         CALCULOS[clave]()
-
-
-def pagina_evaluacion():
-    st.header("🎓 Evaluación de Conocimiento - Recorrido PTAR Kenzo Jeans")
-    st.markdown(
-        """
-        **Universidad Central — Sistemas de Tratamiento Avanzado**  
-        Por favor ingresa tus datos personales y responde las 7 preguntas basadas en el recorrido por la planta. 
-        Al finalizar, haz clic en el botón para enviar, guardar en registro y conocer tu calificación.
-        """
-    )
-    st.markdown("---")
-
-    with st.form("form_evaluacion"):
-        st.subheader("👤 Datos del Estudiante")
-        col_d1, col_d2, col_d3 = st.columns(3)
-        nombre = col_d1.text_input("Nombre completo")
-        cedula = col_d2.text_input("Cédula / Documento")
-        correo = col_d3.text_input("Correo institucional")
-
-        st.markdown("---")
-        st.subheader("📝 Cuestionario de la PTAR")
-
-        # Pregunta 1
-        st.markdown("**1. ¿Cuál es la función principal de la torre de enfriamiento en la cabecera del tren de tratamiento textil?**")
-        p1 = st.radio("Opciones_p1", [
-            "A) Retirar los sólidos suspendidos de gran tamaño mediante rejillas.",
-            "B) Disipar calor y bajar la temperatura del efluente de tintorería por debajo de 30 °C.",
-            "C) Elevar el pH del agua inyectando cal viva."
-        ], index=0, label_visibility="collapsed")
-
-        # Pregunta 2
-        st.markdown("**2. ¿Qué producto químico se utiliza habitualmente en el tanque de coagulación para desestabilizar los coloides?**")
-        p2 = st.radio("Opciones_p2", [
-            "A) Peróxido de hidrógeno ($H_2O_2$)",
-            "B) Policloruro de aluminio (PAC)",
-            "C) Hipoclorito de sodio"
-        ], index=0, label_visibility="collapsed")
-
-        # Pregunta 3
-        st.markdown("**3. En el tanque de homogenización y neutralización, ¿cómo se realiza normalmente el ajuste de pH en esta planta?**")
-        p3 = st.radio("Opciones_p3", [
-            "A) Dosificación automática computarizada con válvulas PID.",
-            "B) Aplicación manual de cal hidratada según el valor medido.",
-            "C) Adición continua de ácido sulfúrico."
-        ], index=0, label_visibility="collapsed")
-
-        # Pregunta 4
-        st.markdown("**4. ¿Cuál es el objetivo físico principal de la zona de sedimentación con sus paneles inclinados?**")
-        p4 = st.radio("Opciones_p4", [
-            "A) Retener y separar por gravedad los flóculos formados, aumentando el área superficial efectiva.",
-            "B) Oxigenar el agua para eliminar completamente la DQO.",
-            "C) Filtrar bacterias patógenas mediante membranas porosas."
-        ], index=0, label_visibility="collapsed")
-
-        # Pregunta 5
-        st.markdown("**5. ¿Qué función cumple específicamente el filtro de carbón activado en las etapas finales del tren?**")
-        p5 = st.radio("Opciones_p5", [
-            "A) Retener únicamente arena gruesa del río.",
-            "B) Adsorber color remanente, tensoactivos y olores del efluente.",
-            "C) Aumentar la temperatura del agua antes del vertimiento."
-        ], index=0, label_visibility="collapsed")
-
-        # Pregunta 6
-        st.markdown("**6. ¿Qué proceso químico se lleva a cabo en el tanque de oxidación empleando peróxido de hidrógeno?**")
-        p6 = st.radio("Opciones_p6", [
-            "A) Reducción de la carga orgánica disuelta (DQO) y color que persiste tras el fisicoquímico.",
-            "B) Coagulación primaria de sólidos gruesos.",
-            "C) Desinfección microbiológica con cloro residual libre."
-        ], index=0, label_visibility="collapsed")
-
-        # Pregunta 7
-        st.markdown("**7. ¿Cuál es el principal factor o problema operativo que amenaza la vida útil de las membranas de micro/ultrafiltración (fouling)?**")
-        p7 = st.radio("Opciones_p7", [
-            "A) El exceso de colorantes azulados en el agua.",
-            "B) El ensuciamiento por sólidos finos, coloides o agentes incompatibles que no fueron removidos antes.",
-            "C) El exceso de presión por debajo de 10 psi."
-        ], index=0, label_visibility="collapsed")
-
-        st.markdown("---")
-        enviar_quiz = st.form_submit_button("📤 Enviar y Guardar Evaluación")
-
-        if enviar_quiz:
-            if not nombre.strip() or not cedula.strip() or not correo.strip():
-                st.error("⚠️ Por favor completa tus datos personales (Nombre, Cédula y Correo) antes de enviar.")
-            else:
-                # Calificación automática
-                puntaje = 0
-                if p1.startswith("B)"): puntaje += 1
-                if p2.startswith("B)"): puntaje += 1
-                if p3.startswith("B)"): puntaje += 1
-                if p4.startswith("A)"): puntaje += 1
-                if p5.startswith("B)"): puntaje += 1
-                if p6.startswith("A)"): puntaje += 1
-                if p7.startswith("B)"): puntaje += 1
-
-                # Preparar JSON para Google Sheets
-                payload = {
-                    "nombre": nombre,
-                    "cedula": cedula,
-                    "correo": correo,
-                    "puntaje": f"{puntaje}/7",
-                    "p1": p1,
-                    "p2": p2,
-                    "p3": p3,
-                    "p4": p4,
-                    "p5": p5,
-                    "p6": p6,
-                    "p7": p7
-                }
-
-                # Enviar al Webhook de Google Apps Script
-                try:
-                    res = requests.post(WEBHOOK_SHEET_URL, json=payload, timeout=8)
-                    if res.status_code == 200:
-                        st.success(f"🎉 ¡Evaluación registrada exitosamente en Google Sheets, **{nombre}**!")
-                    else:
-                        st.warning(f"⚠️ Evaluación completada, pero hubo un contratiempo al conectar con Sheets (Código {res.status_code}).")
-                except Exception as err:
-                    st.warning(f"⚠️ Evaluación completada, pero no se logró conectar con Google Sheets: {err}")
-
-                st.metric("Calificación Obtenida", f"{puntaje} / 7 aciertos")
-                
-                if puntaje >= 6:
-                    st.info("🌟 ¡Excelente dominio de los procesos de tratamiento de la PTAR!")
-                elif puntaje >= 4:
-                    st.info("👍 Buen desempeño, repasa algunos detalles del tren fisicoquímico y de filtración.")
-                else:
-                    st.warning("💡 Te sugerimos revisar nuevamente las fichas técnicas de los equipos en el menú lateral.")
 
 
 def pagina_qr():
